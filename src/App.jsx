@@ -13,7 +13,7 @@ const AppContent = () => {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
-        <span className="loading-text">LOADING REPUBLIC CUP...</span>
+        <span className="loading-text">LOADING SCAPIA OFFSIDE...</span>
       </div>
     );
   }

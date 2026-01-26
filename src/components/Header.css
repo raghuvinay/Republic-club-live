@@ -24,8 +24,9 @@
 }
 
 .header-logo {
-  width: 32px;
-  height: 32px;
+  height: 40px;        /* Increased height for visibility */
+  width: auto;         /* Allow width to adjust automatically */
+  object-fit: contain; /* Ensure it doesn't get distorted */
 }
 
 .header-title-group {

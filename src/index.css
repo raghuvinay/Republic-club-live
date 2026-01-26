@@ -1,14 +1,15 @@
 :root {
   /* Primary Colors */
-  --primary-purple: #38003C;
-  --primary-pink: #FF005A;
-  --success-green: #00ff88;
+  --primary-orange: #FF5D2E; /* Scapia Orange approx */
+  --primary-purple: #2A0D2E; /* Darker, richer purple background */
+  --primary-pink: var(--primary-orange); /* Replaces pink with orange globally */
+  --success-green: #00E096;
 
   /* Background Colors */
-  --bg-dark: #1a0a1c;
-  --bg-card: #2d1430;
-  --bg-card-hover: #3d1f42;
-  --bg-input: #1a0a1c;
+--bg-dark: #120513; 
+  --bg-card: #1E0B20;
+  --bg-card-hover: #2A0D2E;
+  --bg-input: #120513;
 
   /* Text Colors */
   --text-primary: #ffffff;
