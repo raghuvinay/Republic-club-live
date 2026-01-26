@@ -1,0 +1,107 @@
+.goal-modal {
+  max-width: 360px;
+}
+
+.goal-modal-content {
+  padding: 1.25rem;
+}
+
+.goal-team-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.goal-team-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.goal-team-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.125rem;
+  letter-spacing: 0.05em;
+}
+
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.player-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: var(--bg-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.player-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--primary-pink);
+  transform: translateY(-2px);
+}
+
+.player-btn:active {
+  transform: translateY(0);
+}
+
+.player-initial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--primary-purple);
+  border-radius: 50%;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.player-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-btn.own-goal {
+  grid-column: span 2;
+  background: rgba(255, 0, 90, 0.1);
+  border-color: rgba(255, 0, 90, 0.3);
+}
+
+.player-btn.own-goal .player-initial {
+  background: var(--primary-pink);
+}
+
+.player-btn.own-goal:hover {
+  background: rgba(255, 0, 90, 0.2);
+  border-color: var(--primary-pink);
+}
+
+@media (max-width: 360px) {
+  .player-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .player-btn.own-goal {
+    grid-column: span 1;
+  }
+}

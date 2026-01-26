@@ -1,0 +1,214 @@
+.match-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: slideUp 0.3s ease-out;
+}
+
+.match-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(255, 0, 90, 0.15);
+}
+
+.match-card.live {
+  border: 1px solid var(--status-live);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
+}
+
+.match-card.final {
+  background: linear-gradient(135deg, var(--bg-card) 0%, #3d1f42 100%);
+}
+
+.final-badge {
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+  color: var(--bg-dark);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  letter-spacing: 0.1em;
+}
+
+.match-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.match-number {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.match-status {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: 4px;
+}
+
+.status-upcoming {
+  color: var(--text-muted);
+  background: rgba(107, 90, 109, 0.2);
+}
+
+.status-live {
+  color: var(--status-live);
+  background: rgba(0, 255, 136, 0.15);
+  animation: pulse 2s infinite;
+}
+
+.status-ft {
+  color: var(--status-ft);
+  background: rgba(255, 0, 90, 0.15);
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--status-live);
+  border-radius: 50%;
+  animation: pulse 1s infinite;
+}
+
+.match-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.team-logo-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--bg-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-logo-placeholder {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: var(--text-muted);
+}
+
+.team-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.goal-scorers {
+  font-size: 0.625rem;
+  color: var(--text-secondary);
+  text-align: center;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.score-container {
+  flex: 0 0 auto;
+  padding: 0 0.5rem;
+}
+
+.vs-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.25rem;
+  color: var(--text-muted);
+}
+
+.score {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.score-home,
+.score-away {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  color: var(--text-primary);
+  min-width: 36px;
+  text-align: center;
+}
+
+.score-separator {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  color: var(--text-muted);
+}
+
+.match-card.live .score-home,
+.match-card.live .score-away {
+  color: var(--status-live);
+}
+
+.edit-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: var(--primary-pink);
+  color: white;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.match-card:hover .edit-button {
+  opacity: 1;
+}
+
+@media (max-width: 360px) {
+  .team-logo-wrapper {
+    width: 40px;
+    height: 40px;
+  }
+
+  .score-home,
+  .score-away {
+    font-size: 2rem;
+    min-width: 28px;
+  }
+
+  .team-name {
+    font-size: 0.875rem;
+  }
+}
