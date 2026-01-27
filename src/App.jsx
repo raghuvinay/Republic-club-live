@@ -4,6 +4,7 @@ import BottomNav from './components/BottomNav';
 import MatchesTab from './components/MatchesTab';
 import TableTab from './components/TableTab';
 import PollsTab from './components/PollsTab';
+import RulesTab from './components/RulesTab';
 import './App.css';
 
 const AppContent = () => {
@@ -26,6 +27,7 @@ const AppContent = () => {
         {activeTab === 'matches' && <MatchesTab />}
         {activeTab === 'table' && <TableTab />}
         {activeTab === 'polls' && <PollsTab />}
+        {activeTab === 'rules' && <RulesTab />}
       </main>
 
       <BottomNav />

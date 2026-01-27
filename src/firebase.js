@@ -8,6 +8,7 @@ import {
   onSnapshot,
   getDocs,
   addDoc,
+  deleteDoc,
   query,
   orderBy,
   serverTimestamp
@@ -142,6 +143,20 @@ export const subscribeToPredictions = (callback) => {
     }));
     callback(predictions);
   });
+};
+
+// Delete all predictions
+export const deleteAllPredictions = async () => {
+  try {
+    const snapshot = await getDocs(predictionsCollection);
+    const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
+    await Promise.all(deletePromises);
+    console.log('All predictions deleted');
+    return true;
+  } catch (error) {
+    console.error('Error deleting predictions:', error);
+    return false;
+  }
 };
 
 export { db };

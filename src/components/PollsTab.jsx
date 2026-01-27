@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { TEAMS } from '../data/teams';
-import { submitPrediction } from '../firebase';
+import { submitPrediction, deleteAllPredictions } from '../firebase';
 import { formatMatchDate, formatMatchTime } from '../data/schedule';
 import './PollsTab.css';
 
 const PollsTab = () => {
-  const { getUpcomingMatches, predictions } = useApp();
+  const { getUpcomingMatches, predictions, matches, isAdmin } = useApp();
 
   const [userName, setUserName] = useState('');
   const [selectedMatch, setSelectedMatch] = useState('');
@@ -44,12 +44,24 @@ const PollsTab = () => {
     return players;
   }, [selectedMatch, upcomingMatches]);
 
+  // Check if selected match has locked predictions
+  const isMatchLocked = useMemo(() => {
+    if (!selectedMatch) return false;
+    const match = matches.find(m => m.id === selectedMatch);
+    return match?.predictionsLocked === true;
+  }, [selectedMatch, matches]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     if (!userName.trim()) {
-      setError('Please enter your name');
+      setError('Please enter your Scapia email');
+      return;
+    }
+
+    if (!userName.trim().endsWith('@scapia.cards')) {
+      setError('Please use your Scapia email (@scapia.cards)');
       return;
     }
 
@@ -60,6 +72,13 @@ const PollsTab = () => {
 
     if (!selectedPlayer) {
       setError('Please select a player');
+      return;
+    }
+
+    // Check if predictions are locked
+    const matchData = matches.find(m => m.id === selectedMatch);
+    if (matchData?.predictionsLocked) {
+      setError('Predictions are locked for this match (2 PM cutoff)');
       return;
     }
 
@@ -92,19 +111,32 @@ const PollsTab = () => {
     }
   };
 
-  // Count predictions by player for current selected match
-  const predictionCounts = useMemo(() => {
-    if (!selectedMatch) return {};
+  // Check if a match has started (live or finished)
+  const isMatchStarted = (matchId) => {
+    const match = matches.find(m => m.id === matchId);
+    return match && (match.status === 'live' || match.status === 'ft');
+  };
 
-    const counts = {};
-    predictions
-      .filter(p => p.matchId === selectedMatch)
-      .forEach(p => {
-        counts[p.predictedPlayer] = (counts[p.predictedPlayer] || 0) + 1;
+  // Get matches with published Man of the Match winners
+  const PRIZE_POOL = 1000;
+  const winnersHistory = useMemo(() => {
+    return matches
+      .filter(m => m.momPublishedAt)
+      .sort((a, b) => a.matchNumber - b.matchNumber) // Sort 1 to 15
+      .map(m => {
+        const winners = m.momWinners || [];
+        const coinsPerWinner = winners.length > 0 ? Math.floor(PRIZE_POOL / winners.length) : 0;
+        return {
+          matchNumber: m.matchNumber,
+          homeTeam: TEAMS[m.home]?.shortName || m.home,
+          awayTeam: TEAMS[m.away]?.shortName || m.away,
+          score: `${m.scoreHome}-${m.scoreAway}`,
+          manOfTheMatch: m.manOfTheMatch,
+          winners,
+          coinsPerWinner
+        };
       });
-
-    return counts;
-  }, [selectedMatch, predictions]);
+  }, [matches]);
 
   return (
     <div className="tab-content">
@@ -113,15 +145,75 @@ const PollsTab = () => {
         <div className="rules-card">
           <div className="rules-header">
             <span className="rules-icon">🏆</span>
-            <h3>First Goal Scorer Prediction</h3>
+            <h3>Man of the Match Prediction</h3>
           </div>
-          <ul className="rules-list">
-            <li>Predict who will score the <strong>first goal</strong> of the match</li>
-            <li>Winner receives <strong>1000 coins</strong></li>
-            <li>Tie-breaker: Prediction from winning team wins</li>
-          </ul>
+          <div className="rules-structured">
+            <div className="rule-group">
+              <h4 className="rule-group-title">How to Win</h4>
+              <ul className="rules-list">
+                <li>Predict who will score the <strong>most goals</strong> in the match</li>
+                <li>Prize pool: <strong>1000 coins</strong> per match</li>
+                <li>Multiple winners split the prize equally</li>
+              </ul>
+            </div>
+            <div className="rule-group">
+              <h4 className="rule-group-title">Tie-breakers</h4>
+              <ul className="rules-list">
+                <li>If tied on goals, player from <strong>winning team</strong> wins</li>
+                <li>If match is a draw, <strong>referee decides</strong> MoM</li>
+              </ul>
+            </div>
+            <div className="rule-group">
+              <h4 className="rule-group-title">Terms & Conditions</h4>
+              <ul className="rules-list">
+                <li>Only your <strong>first entry</strong> per match counts</li>
+                <li>Predictions lock at <strong>2:00 PM</strong> on matchday</li>
+                <li><strong>Players & managers</strong> are not allowed to participate</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* Winners History */}
+      {winnersHistory.length > 0 && (
+        <section className="winners-section animate-slide-up" style={{ animationDelay: '0.05s' }}>
+          <div className="section-header">
+            <h2 className="section-title">WINNERS HALL OF FAME</h2>
+            <span className="section-badge trophy-badge">🏆</span>
+          </div>
+
+          <div className="winners-list">
+            {winnersHistory.map(item => (
+              <div key={item.matchNumber} className="winner-card">
+                <div className="winner-match-info">
+                  <span className="winner-match-num">M{item.matchNumber}</span>
+                  <span className="winner-teams">{item.homeTeam} vs {item.awayTeam}</span>
+                  <span className="winner-score">{item.score}</span>
+                </div>
+                <div className="winner-details">
+                  <div className="mom-player">
+                    <span className="mom-label">MoM:</span>
+                    <span className="mom-name">{item.manOfTheMatch}</span>
+                  </div>
+                  {item.winners.length > 0 ? (
+                    <div className="winner-info">
+                      <div className="winner-names">
+                        {item.winners.map((name, idx) => (
+                          <span key={idx} className="winner-badge">{name}</span>
+                        ))}
+                      </div>
+                      <span className="coins-earned">{item.coinsPerWinner} coins each</span>
+                    </div>
+                  ) : (
+                    <span className="no-winners">No correct predictions</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Prediction Form */}
       <section className="poll-section animate-slide-up" style={{ animationDelay: '0.1s' }}>
@@ -144,14 +236,14 @@ const PollsTab = () => {
 
         <form onSubmit={handleSubmit} className="poll-form">
           <div className="form-group">
-            <label htmlFor="userName">Your Name</label>
+            <label htmlFor="userName">Scapia Email</label>
             <input
-              type="text"
+              type="email"
               id="userName"
               value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              placeholder="Enter your name"
-              maxLength={30}
+              onChange={(e) => setUserName(e.target.value.toLowerCase())}
+              placeholder="yourname@scapia.cards"
+              maxLength={50}
             />
           </div>
 
@@ -169,9 +261,10 @@ const PollsTab = () => {
               {upcomingMatches.map(match => {
                 const homeTeam = TEAMS[match.home];
                 const awayTeam = TEAMS[match.away];
+                const locked = match.predictionsLocked;
                 return (
-                  <option key={match.id} value={match.id}>
-                    M{match.matchNumber}: {homeTeam?.shortName} vs {awayTeam?.shortName} ({formatMatchDate(match.date)})
+                  <option key={match.id} value={match.id} disabled={locked}>
+                    M{match.matchNumber}: {homeTeam?.shortName} vs {awayTeam?.shortName} ({formatMatchDate(match.date)}){locked ? ' [LOCKED]' : ''}
                   </option>
                 );
               })}
@@ -180,7 +273,7 @@ const PollsTab = () => {
 
           {selectedMatch && (
             <div className="form-group animate-fade-in">
-              <label htmlFor="playerSelect">First Goal Scorer</label>
+              <label htmlFor="playerSelect">Man of the Match</label>
               <select
                 id="playerSelect"
                 value={selectedPlayer}
@@ -190,7 +283,6 @@ const PollsTab = () => {
                 {availablePlayers.map(player => (
                   <option key={`${player.name}-${player.team}`} value={player.name}>
                     {player.name} ({player.teamName})
-                    {predictionCounts[player.name] ? ` - ${predictionCounts[player.name]} votes` : ''}
                   </option>
                 ))}
               </select>
@@ -200,7 +292,7 @@ const PollsTab = () => {
           <button
             type="submit"
             className="submit-button"
-            disabled={submitting || !userName || !selectedMatch || !selectedPlayer}
+            disabled={submitting || !userName || !selectedMatch || !selectedPlayer || isMatchLocked}
           >
             {submitting ? (
               <span className="button-loading">
@@ -230,7 +322,11 @@ const PollsTab = () => {
                   <span className="user-name">{pred.userName}</span>
                 </div>
                 <div className="prediction-detail">
-                  <span className="predicted-player">{pred.predictedPlayer}</span>
+                  {isMatchStarted(pred.matchId) ? (
+                    <span className="predicted-player">{pred.predictedPlayer}</span>
+                  ) : (
+                    <span className="predicted-player hidden-vote">Hidden</span>
+                  )}
                   <span className="predicted-match">Match {pred.matchNumber}</span>
                 </div>
               </div>
@@ -245,6 +341,25 @@ const PollsTab = () => {
           <h3>No Upcoming Matches</h3>
           <p>Predictions open before each match!</p>
         </div>
+      )}
+
+      {/* Admin Controls */}
+      {isAdmin && predictions.length > 0 && (
+        <section className="admin-poll-section animate-slide-up" style={{ animationDelay: '0.3s' }}>
+          <div className="section-header">
+            <h2 className="section-title">ADMIN CONTROLS</h2>
+          </div>
+          <button
+            className="delete-all-btn"
+            onClick={async () => {
+              if (window.confirm(`Delete all ${predictions.length} predictions? This cannot be undone.`)) {
+                await deleteAllPredictions();
+              }
+            }}
+          >
+            Delete All Predictions ({predictions.length})
+          </button>
+        </section>
       )}
     </div>
   );

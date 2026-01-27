@@ -57,7 +57,7 @@ export const AppProvider = ({ children }) => {
 
   // Admin login/logout
   const loginAdmin = useCallback((pin) => {
-    if (pin === '1234') {
+    if (pin === '5555') {
       setIsAdmin(true);
       localStorage.setItem('republic-cup-admin', 'true');
       return true;
@@ -140,23 +140,25 @@ export const AppProvider = ({ children }) => {
       });
   }, [matches]);
 
-  // Calculate top scorers
+  // Calculate top scorers (only from completed matches)
   const calculateTopScorers = useCallback(() => {
     const scorers = {};
 
-    matches.forEach(match => {
-      (match.goals || []).forEach(goal => {
-        const key = `${goal.player}-${goal.team}`;
-        if (!scorers[key]) {
-          scorers[key] = {
-            player: goal.player,
-            team: goal.team,
-            goals: 0
-          };
-        }
-        scorers[key].goals++;
+    matches
+      .filter(m => m.status === 'ft')
+      .forEach(match => {
+        (match.goals || []).forEach(goal => {
+          const key = `${goal.player}-${goal.team}`;
+          if (!scorers[key]) {
+            scorers[key] = {
+              player: goal.player,
+              team: goal.team,
+              goals: 0
+            };
+          }
+          scorers[key].goals++;
+        });
       });
-    });
 
     return Object.values(scorers)
       .sort((a, b) => b.goals - a.goals)

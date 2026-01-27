@@ -91,18 +91,27 @@
 }
 
 .col-stat {
-  width: 36px;
+  width: 32px;
   text-align: center;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--text-secondary);
 }
 
+.col-stat.col-wdl {
+  width: 24px;
+  font-size: 0.75rem;
+}
+
 .col-pts {
-  width: 40px;
+  width: 36px;
   text-align: center;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   color: var(--primary-pink);
+}
+
+.table-team-name {
+  font-size: 0.8125rem;
 }
 
 .table-legend {
@@ -195,6 +204,52 @@
 .section-badge.golden {
   background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
   color: var(--bg-dark);
+}
+
+.section-badge.coins-badge {
+  background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+  color: var(--bg-dark);
+}
+
+/* Leader variations */
+.scorer-row.assist-leader {
+  background: linear-gradient(90deg, rgba(0, 200, 255, 0.1) 0%, transparent 100%);
+}
+
+.scorer-row.clean-leader {
+  background: linear-gradient(90deg, rgba(0, 255, 136, 0.1) 0%, transparent 100%);
+}
+
+.scorer-row.coins-leader {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.15) 0%, transparent 100%);
+}
+
+.assist-count {
+  color: #00c8ff !important;
+}
+
+.coins-value {
+  color: #ffd700 !important;
+}
+
+/* Scorer info with logo */
+.scorer-info {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.scorer-info .table-team-logo {
+  width: 24px;
+  height: 24px;
+}
+
+.scorer-info .scorer-name {
+  flex: 1;
+}
+
+.scorer-info .scorer-team {
+  margin-left: auto;
 }
 
 /* Stats Grid */
