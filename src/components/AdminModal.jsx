@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { TEAMS } from '../data/teams';
-import { updateMatch } from '../firebase';
+import { updateMatch, deletePrediction } from '../firebase';
 import GoalModal from './GoalModal';
 import './Modal.css';
 import './AdminModal.css';
@@ -336,6 +336,17 @@ const AdminModal = ({ match, onClose }) => {
                         <span className="pred-player">{pred.predictedPlayer}</span>
                         {!pred.isFirstEntry && <span className="pred-dup-badge">DUP</span>}
                         {pred.isFirstEntry && pred.predictedPlayer === selectedMoM && <span className="pred-win-badge">WIN</span>}
+                        <button
+                          className="pred-delete-btn"
+                          onClick={() => {
+                            if (window.confirm(`Delete prediction by ${pred.userName}?`)) {
+                              deletePrediction(pred.id);
+                            }
+                          }}
+                          disabled={updating}
+                        >
+                          ×
+                        </button>
                       </div>
                     );
                   })}

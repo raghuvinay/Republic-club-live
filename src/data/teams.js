@@ -5,6 +5,7 @@ export const TEAMS = {
     shortName: 'FEE',
     color: '#FFFFFF',
     logo: 'https://res.cloudinary.com/scapiacards/image/upload/q_85/v1769249520/spitha_prod_uploads/2026_01/feel_united_1769249519167.webp',
+    manager: 'Aniruddh Agrawal',
     players: [
       'Ninad',
       'Aditya Thakur',
@@ -21,6 +22,7 @@ export const TEAMS = {
     shortName: 'DHU',
     color: '#000000',
     logo: 'https://res.cloudinary.com/scapiacards/image/upload/q_85/v1769249469/spitha_prod_uploads/2026_01/durandhars_1769249467581.webp',
+    manager: 'Trivedi',
     players: [
       'Sagar Singh',
       'Raghu',
@@ -37,6 +39,7 @@ export const TEAMS = {
     shortName: 'GDG',
     color: '#87CEEB',
     logo: 'https://res.cloudinary.com/scapiacards/image/upload/q_85/v1769249929/spitha_prod_uploads/2026_01/the_goaldiggers2_1769249927876.webp',
+    manager: 'AKG',
     players: [
       'Parth Jhawar',
       'Abdul Rehman',
@@ -53,6 +56,7 @@ export const TEAMS = {
     shortName: 'UFU',
     color: '#FF0000',
     logo: 'https://res.cloudinary.com/scapiacards/image/upload/q_85/v1769249558/spitha_prod_uploads/2026_01/userflow_united_1769249557427.webp',
+    manager: 'Mani',
     players: [
       'Sumedh Zope',
       'Avaneesh Kulkarni',

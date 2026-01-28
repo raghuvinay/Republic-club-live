@@ -159,4 +159,16 @@ export const deleteAllPredictions = async () => {
   }
 };
 
+// Delete a single prediction
+export const deletePrediction = async (predictionId) => {
+  try {
+    await deleteDoc(doc(db, 'predictions', predictionId));
+    console.log('Prediction deleted:', predictionId);
+    return true;
+  } catch (error) {
+    console.error('Error deleting prediction:', error);
+    return false;
+  }
+};
+
 export { db };
