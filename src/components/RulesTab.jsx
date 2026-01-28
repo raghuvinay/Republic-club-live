@@ -124,7 +124,7 @@ const RulesTab = () => {
             <div className="rule-item">
               <span className="rule-bullet"></span>
               <div className="rule-text">
-                Predictions lock at <strong>2:00 PM</strong> on matchday (admin controlled)
+                Predictions lock at <strong>2:00 PM</strong> on matchday
               </div>
             </div>
             <div className="rule-item warning">
@@ -137,42 +137,6 @@ const RulesTab = () => {
               <span className="rule-bullet"></span>
               <div className="rule-text">
                 Winners are announced after Man of the Match is confirmed
-              </div>
-            </div>
-            <div className="rule-item">
-              <span className="rule-bullet"></span>
-              <div className="rule-text">
-                Admin decision on all matters is final
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Fair Play */}
-      <section className="rules-page-section animate-slide-up" style={{ animationDelay: '0.2s' }}>
-        <div className="rules-page-card">
-          <div className="rules-page-header">
-            <span className="rules-page-icon">🤝</span>
-            <h3>Fair Play</h3>
-          </div>
-          <div className="rules-page-content">
-            <div className="rule-item">
-              <span className="rule-bullet"></span>
-              <div className="rule-text">
-                Respect all players, referees, and spectators
-              </div>
-            </div>
-            <div className="rule-item">
-              <span className="rule-bullet"></span>
-              <div className="rule-text">
-                No abusive language or unsportsmanlike conduct
-              </div>
-            </div>
-            <div className="rule-item">
-              <span className="rule-bullet"></span>
-              <div className="rule-text">
-                Play in the spirit of the game
               </div>
             </div>
           </div>
