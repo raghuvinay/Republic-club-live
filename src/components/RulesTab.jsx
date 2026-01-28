@@ -127,12 +127,6 @@ const RulesTab = () => {
                 Predictions lock at <strong>2:00 PM</strong> on matchday
               </div>
             </div>
-            <div className="rule-item warning">
-              <span className="rule-bullet warning"></span>
-              <div className="rule-text">
-                <strong>Players & managers</strong> are NOT allowed to participate in polls
-              </div>
-            </div>
             <div className="rule-item">
               <span className="rule-bullet"></span>
               <div className="rule-text">

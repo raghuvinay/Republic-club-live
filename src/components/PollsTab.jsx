@@ -168,7 +168,6 @@ const PollsTab = () => {
               <ul className="rules-list">
                 <li>Only your <strong>first entry</strong> per match counts</li>
                 <li>Predictions lock at <strong>2:00 PM</strong> on matchday</li>
-                <li><strong>Players & managers</strong> are not allowed to participate</li>
               </ul>
             </div>
           </div>
