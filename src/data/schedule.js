@@ -9,13 +9,13 @@ export const MATCHDAYS = {
   '2026-01-30': {
     day: 2,
     name: 'Matchday 2',
-    ground: 'Kicks on Grass (With Roof)',
+    ground: 'Kicks on Grass (Closed)',
     icon: '🏠'
   },
   '2026-02-02': {
     day: 3,
     name: 'Matchday 3',
-    ground: 'Vplay (Opposite Office)',
+    ground: 'Vplay',
     icon: '🏟️'
   }
 };

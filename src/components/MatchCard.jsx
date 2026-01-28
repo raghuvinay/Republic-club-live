@@ -37,7 +37,11 @@ const MatchCard = ({ match }) => {
   const homeGoals = getTeamGoals(match.home);
   const awayGoals = getTeamGoals(match.away);
   const hasGoals = homeGoals.length > 0 || awayGoals.length > 0;
-  const isClickable = match.status === 'ft' && hasGoals;
+
+  // Clickable for completed matches with goals OR upcoming matches with valid teams
+  const isUpcoming = match.status === 'upcoming' && match.home !== 'tbd';
+  const isCompleted = match.status === 'ft' && hasGoals;
+  const isClickable = isCompleted || isUpcoming;
 
   const handleCardClick = () => {
     if (isClickable) {
@@ -103,15 +107,23 @@ const MatchCard = ({ match }) => {
         </div>
 
         {/* Expand hint for completed matches with goals */}
-        {isClickable && !expanded && (
+        {isCompleted && !expanded && (
           <div className="expand-hint">
             <span>Tap to see scorers</span>
             <span className="expand-icon">▼</span>
           </div>
         )}
 
-        {/* Expanded Goals Section */}
-        {expanded && (
+        {/* Expand hint for upcoming matches */}
+        {isUpcoming && !expanded && (
+          <div className="expand-hint">
+            <span>Tap to see squads</span>
+            <span className="expand-icon">▼</span>
+          </div>
+        )}
+
+        {/* Expanded Goals Section - for completed matches */}
+        {expanded && isCompleted && (
           <div className="goals-detail">
             <div className="goals-column home-goals">
               {homeGoals.length > 0 ? (
@@ -143,6 +155,41 @@ const MatchCard = ({ match }) => {
               ) : (
                 <span className="no-goals">-</span>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Expanded Roster Section - for upcoming matches */}
+        {expanded && isUpcoming && (
+          <div className="roster-detail">
+            <div className="roster-column home-roster">
+              <div className="roster-header">
+                <span className="manager-label">Manager</span>
+                <span className="manager-name">{homeTeam.manager || 'TBD'}</span>
+              </div>
+              <div className="roster-players">
+                {homeTeam.players?.map((player, idx) => (
+                  <div key={idx} className="roster-player">
+                    <span className="player-number">{idx + 1}</span>
+                    <span className="player-name">{player}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="roster-divider"></div>
+            <div className="roster-column away-roster">
+              <div className="roster-header">
+                <span className="manager-label">Manager</span>
+                <span className="manager-name">{awayTeam.manager || 'TBD'}</span>
+              </div>
+              <div className="roster-players">
+                {awayTeam.players?.map((player, idx) => (
+                  <div key={idx} className="roster-player">
+                    <span className="player-number">{idx + 1}</span>
+                    <span className="player-name">{player}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

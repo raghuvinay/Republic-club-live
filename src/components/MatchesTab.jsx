@@ -24,17 +24,41 @@ const MatchesTab = () => {
       .sort(([a], [b]) => new Date(a) - new Date(b))
       .map(([date, dateMatches]) => {
         const matchday = getMatchday(date);
+        const sortedMatches = dateMatches.sort((a, b) => a.time.localeCompare(b.time));
+
+        // Calculate matchday stats
+        const completedMatches = sortedMatches.filter(m => m.status === 'ft');
+        const liveMatches = sortedMatches.filter(m => m.status === 'live');
+        const totalGoals = completedMatches.reduce((sum, m) => sum + (m.scoreHome || 0) + (m.scoreAway || 0), 0);
+        const isComplete = completedMatches.length === sortedMatches.length;
+        const isLive = liveMatches.length > 0;
+        const hasStarted = completedMatches.length > 0 || isLive;
+
         return {
           date,
           dateLabel: formatMatchDate(date),
           matchday,
-          matches: dateMatches.sort((a, b) => a.time.localeCompare(b.time))
+          matches: sortedMatches,
+          stats: {
+            total: sortedMatches.length,
+            completed: completedMatches.length,
+            live: liveMatches.length,
+            totalGoals,
+            isComplete,
+            isLive,
+            hasStarted
+          }
         };
       });
   }, [matches]);
 
   // Get live matches first
   const liveMatches = matches.filter(m => m.status === 'live');
+
+  // Tournament progress
+  const totalMatches = matches.length;
+  const completedMatches = matches.filter(m => m.status === 'ft').length;
+  const progressPercent = totalMatches > 0 ? Math.round((completedMatches / totalMatches) * 100) : 0;
 
   if (loading) {
     return (
@@ -48,6 +72,23 @@ const MatchesTab = () => {
 
   return (
     <div className="tab-content">
+      {/* Tournament Progress */}
+      <section className="tournament-progress animate-slide-up">
+        <div className="progress-header">
+          <span className="progress-title">SCAPIA OFFSIDE CUP 2026</span>
+          <span className="progress-count">{completedMatches}/{totalMatches} matches</span>
+        </div>
+        <div className="progress-bar-container">
+          <div className="progress-bar-bg">
+            <div
+              className="progress-bar-fill"
+              style={{ width: `${progressPercent}%` }}
+            ></div>
+          </div>
+          <span className="progress-percent">{progressPercent}%</span>
+        </div>
+      </section>
+
       {/* Live Matches Section */}
       {liveMatches.length > 0 && (
         <section className="live-section animate-fade-in">
@@ -64,8 +105,12 @@ const MatchesTab = () => {
       )}
 
       {/* All Matches by Date */}
-      {groupedMatches.map(group => (
-        <section key={group.date} className="matchday-section">
+      {groupedMatches.map((group, groupIndex) => (
+        <section
+          key={group.date}
+          className={`matchday-section ${group.stats.isComplete ? 'completed' : ''} ${group.stats.isLive ? 'has-live' : ''}`}
+          style={{ animationDelay: `${0.05 + groupIndex * 0.05}s` }}
+        >
           <div className="matchday-header">
             <div className="matchday-info">
               <span className="matchday-icon">{group.matchday.icon}</span>
@@ -74,13 +119,47 @@ const MatchesTab = () => {
                 <span className="matchday-date">{group.dateLabel}</span>
               </div>
             </div>
-            <div className="ground-info">
+            <div className="matchday-meta">
               <span className="ground-name">{group.matchday.ground}</span>
+              {group.stats.hasStarted && (
+                <div className="matchday-stats">
+                  {group.stats.isComplete ? (
+                    <span className="stat-badge complete">
+                      <span className="stat-icon">✓</span>
+                      {group.stats.totalGoals} goals
+                    </span>
+                  ) : group.stats.isLive ? (
+                    <span className="stat-badge live">
+                      <span className="live-dot"></span>
+                      {group.stats.live} LIVE
+                    </span>
+                  ) : (
+                    <span className="stat-badge partial">
+                      {group.stats.completed}/{group.stats.total}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
-          {group.matches.map(match => (
-            <MatchCard key={match.id} match={match} />
-          ))}
+
+          {/* Matches with timeline */}
+          <div className="matchday-matches">
+            {group.matches.map((match, index) => (
+              <div key={match.id} className="match-timeline-item">
+                {/* Timeline connector */}
+                <div className="timeline-connector">
+                  <div className={`timeline-dot ${match.status}`}></div>
+                  {index < group.matches.length - 1 && (
+                    <div className="timeline-line"></div>
+                  )}
+                </div>
+                <div className="match-content">
+                  <MatchCard match={match} />
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
       ))}
 

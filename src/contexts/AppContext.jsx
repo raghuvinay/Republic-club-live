@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { subscribeToMatches, subscribeToPredictions, seedMatches } from '../firebase';
+import { subscribeToMatches, subscribeToPredictions, seedMatches, updateMatchDates } from '../firebase';
 import { TEAMS } from '../data/teams';
 
 const AppContext = createContext(null);
@@ -35,6 +35,9 @@ export const AppProvider = ({ children }) => {
     const init = async () => {
       // Seed matches if needed
       await seedMatches();
+
+      // Update dates from 2025 to 2026
+      await updateMatchDates();
 
       // Subscribe to real-time updates
       unsubMatches = subscribeToMatches((data) => {

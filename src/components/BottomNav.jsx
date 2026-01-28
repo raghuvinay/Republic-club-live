@@ -35,7 +35,8 @@ const BottomNav = () => {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M18 20V10M12 20V4M6 20v-6"/>
         </svg>
-      )
+      ),
+      tag: 'WIN'
     },
     {
       id: 'rules',
@@ -65,6 +66,9 @@ const BottomNav = () => {
               <span className="nav-icon">{tab.icon}</span>
               {tab.badge && (
                 <span className="nav-badge">{tab.badge}</span>
+              )}
+              {tab.tag && (
+                <span className="nav-tag">{tab.tag}</span>
               )}
             </div>
             <span className="nav-label">{tab.label}</span>

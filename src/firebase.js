@@ -171,4 +171,26 @@ export const deletePrediction = async (predictionId) => {
   }
 };
 
+// Update all match dates from 2025 to 2026
+export const updateMatchDates = async () => {
+  try {
+    const snapshot = await getDocs(matchesCollection);
+    for (const docSnap of snapshot.docs) {
+      const data = docSnap.data();
+      if (data.date && data.date.startsWith('2025-')) {
+        const newDate = data.date.replace('2025-', '2026-');
+        await updateDoc(doc(db, 'matches', docSnap.id), {
+          date: newDate,
+          updatedAt: serverTimestamp()
+        });
+      }
+    }
+    console.log('All match dates updated to 2026!');
+    return true;
+  } catch (error) {
+    console.error('Error updating match dates:', error);
+    return false;
+  }
+};
+
 export { db };

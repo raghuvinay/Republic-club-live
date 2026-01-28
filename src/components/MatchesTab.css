@@ -1,5 +1,74 @@
+/* Tournament Progress */
+.tournament-progress {
+  background: linear-gradient(135deg, var(--primary-purple) 0%, var(--bg-card) 100%);
+  border: 1px solid rgba(255, 0, 90, 0.2);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.progress-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  color: var(--text-primary);
+  letter-spacing: 0.1em;
+}
+
+.progress-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.progress-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.progress-bar-bg {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-pink), #FFD700);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.progress-percent {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  color: var(--primary-pink);
+  min-width: 3rem;
+  text-align: right;
+}
+
+/* Matchday Section */
 .matchday-section {
   margin-bottom: 2rem;
+  animation: slideUp 0.3s ease forwards;
+  opacity: 0;
+}
+
+.matchday-section.completed {
+  opacity: 0.85;
+}
+
+.matchday-section.has-live .matchday-header {
+  border-color: var(--status-live);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
 }
 
 .matchday-header {
@@ -10,7 +79,7 @@
   border: 1px solid rgba(255, 0, 90, 0.2);
   border-radius: 12px;
   padding: 1rem 1.25rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .matchday-info {
@@ -41,8 +110,11 @@
   color: var(--text-muted);
 }
 
-.ground-info {
-  text-align: right;
+.matchday-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.375rem;
 }
 
 .ground-name {
@@ -54,6 +126,125 @@
   border-radius: 100px;
 }
 
+.matchday-stats {
+  display: flex;
+}
+
+.stat-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+.stat-badge.complete {
+  background: rgba(0, 255, 136, 0.1);
+  color: var(--status-live);
+}
+
+.stat-badge.live {
+  background: rgba(0, 255, 136, 0.15);
+  color: var(--status-live);
+}
+
+.stat-badge.partial {
+  background: rgba(255, 215, 0, 0.1);
+  color: #FFD700;
+}
+
+.stat-icon {
+  font-size: 0.625rem;
+}
+
+/* Timeline */
+.matchday-matches {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0.25rem;
+}
+
+.match-timeline-item {
+  display: flex;
+  position: relative;
+}
+
+.timeline-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 24px;
+  flex-shrink: 0;
+  padding-top: 1.5rem;
+}
+
+.timeline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.timeline-dot.live {
+  background: var(--status-live);
+  border-color: var(--status-live);
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+  animation: pulse 2s infinite;
+}
+
+.timeline-dot.ft {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.timeline-dot.upcoming {
+  background: transparent;
+  border-color: rgba(255, 0, 90, 0.4);
+}
+
+.timeline-line {
+  width: 2px;
+  flex: 1;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
+  margin-top: 4px;
+  min-height: 20px;
+}
+
+.match-content {
+  flex: 1;
+  padding-bottom: 0.5rem;
+}
+
+/* Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.matchday-section.completed {
+  animation: slideUp 0.3s ease forwards;
+}
+
+/* Live dot in stat badge */
+.stat-badge .live-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--status-live);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
 @media (max-width: 400px) {
   .matchday-header {
     flex-direction: column;
@@ -61,7 +252,23 @@
     align-items: flex-start;
   }
 
-  .ground-info {
-    text-align: left;
+  .matchday-meta {
+    align-items: flex-start;
+    flex-direction: row;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .timeline-connector {
+    width: 20px;
+  }
+
+  .tournament-progress {
+    padding: 0.875rem 1rem;
+  }
+
+  .progress-title {
+    font-size: 0.875rem;
   }
 }
