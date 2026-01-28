@@ -282,6 +282,73 @@
   letter-spacing: 0.05em;
 }
 
+/* Fun Facts / Interesting Stats */
+.interesting-stats-section {
+  margin-bottom: 2rem;
+}
+
+.fun-facts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.fun-fact-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fun-fact-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.fun-fact-card.hat-trick {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, var(--bg-card) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.fun-fact-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.fun-fact-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.fun-fact-label {
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.fun-fact-value {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.25rem;
+  color: var(--primary-pink);
+}
+
+.fun-fact-detail {
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 400px) {
+  .fun-facts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 360px) {
   .stats-grid {
     grid-template-columns: repeat(3, 1fr);

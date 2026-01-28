@@ -1,3 +1,27 @@
+// Matchday configuration
+export const MATCHDAYS = {
+  '2025-01-29': {
+    day: 1,
+    name: 'Matchday 1',
+    ground: 'Kicks on Grass',
+    icon: '🌿'
+  },
+  '2025-01-30': {
+    day: 2,
+    name: 'Matchday 2',
+    ground: 'Kicks on Grass (With Roof)',
+    icon: '🏠'
+  },
+  '2025-02-02': {
+    day: 3,
+    name: 'Matchday 3',
+    ground: 'Vplay (Opposite Office)',
+    icon: '🏟️'
+  }
+};
+
+export const getMatchday = (date) => MATCHDAYS[date] || { day: 0, name: 'Match', ground: 'TBD', icon: '⚽' };
+
 export const INITIAL_MATCHES = [
   {
     id: 'match-1',

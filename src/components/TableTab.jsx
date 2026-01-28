@@ -74,6 +74,83 @@ const TableTab = () => {
       .slice(0, 10);
   }, [matches]);
 
+  // Calculate interesting stats
+  const interestingStats = useMemo(() => {
+    const ftMatches = matches.filter(m => m.status === 'ft');
+    if (ftMatches.length === 0) return null;
+
+    // Biggest win
+    let biggestWin = null;
+    let maxDiff = 0;
+    ftMatches.forEach(m => {
+      const diff = Math.abs(m.scoreHome - m.scoreAway);
+      if (diff > maxDiff) {
+        maxDiff = diff;
+        const winner = m.scoreHome > m.scoreAway ? m.home : m.away;
+        const loser = m.scoreHome > m.scoreAway ? m.away : m.home;
+        biggestWin = {
+          winner: TEAMS[winner]?.shortName || winner,
+          loser: TEAMS[loser]?.shortName || loser,
+          score: m.scoreHome > m.scoreAway ? `${m.scoreHome}-${m.scoreAway}` : `${m.scoreAway}-${m.scoreHome}`,
+          matchNum: m.matchNumber
+        };
+      }
+    });
+
+    // Highest scoring match
+    let highestScoring = null;
+    let maxGoals = 0;
+    ftMatches.forEach(m => {
+      const total = (m.scoreHome || 0) + (m.scoreAway || 0);
+      if (total > maxGoals) {
+        maxGoals = total;
+        highestScoring = {
+          home: TEAMS[m.home]?.shortName || m.home,
+          away: TEAMS[m.away]?.shortName || m.away,
+          score: `${m.scoreHome}-${m.scoreAway}`,
+          total,
+          matchNum: m.matchNumber
+        };
+      }
+    });
+
+    // Draw count
+    const draws = ftMatches.filter(m => m.scoreHome === m.scoreAway).length;
+
+    // Team with most wins
+    const teamWins = {};
+    ftMatches.forEach(m => {
+      if (m.scoreHome > m.scoreAway) {
+        teamWins[m.home] = (teamWins[m.home] || 0) + 1;
+      } else if (m.scoreAway > m.scoreHome) {
+        teamWins[m.away] = (teamWins[m.away] || 0) + 1;
+      }
+    });
+    const topWinner = Object.entries(teamWins).sort((a, b) => b[1] - a[1])[0];
+
+    // Hat-tricks
+    const hatTricks = [];
+    ftMatches.forEach(m => {
+      const scorerCount = {};
+      (m.goals || []).forEach(g => {
+        scorerCount[g.player] = (scorerCount[g.player] || 0) + 1;
+      });
+      Object.entries(scorerCount).forEach(([player, goals]) => {
+        if (goals >= 3) {
+          hatTricks.push({ player, goals, matchNum: m.matchNumber });
+        }
+      });
+    });
+
+    return {
+      biggestWin,
+      highestScoring,
+      draws,
+      topWinner: topWinner ? { team: TEAMS[topWinner[0]]?.shortName || topWinner[0], wins: topWinner[1] } : null,
+      hatTricks
+    };
+  }, [matches]);
+
   return (
     <div className="tab-content">
       {/* League Table */}
@@ -255,6 +332,73 @@ const TableTab = () => {
           </div>
         </div>
       </section>
+
+      {/* Interesting Stats */}
+      {interestingStats && (
+        <section className="interesting-stats-section animate-slide-up" style={{ animationDelay: '0.4s' }}>
+          <div className="section-header">
+            <h2 className="section-title">FUN FACTS</h2>
+            <span className="section-badge">📊</span>
+          </div>
+
+          <div className="fun-facts-grid">
+            {interestingStats.biggestWin && interestingStats.biggestWin.score !== '0-0' && (
+              <div className="fun-fact-card">
+                <span className="fun-fact-icon">💪</span>
+                <div className="fun-fact-content">
+                  <span className="fun-fact-label">Biggest Win</span>
+                  <span className="fun-fact-value">{interestingStats.biggestWin.winner} {interestingStats.biggestWin.score}</span>
+                  <span className="fun-fact-detail">vs {interestingStats.biggestWin.loser} (M{interestingStats.biggestWin.matchNum})</span>
+                </div>
+              </div>
+            )}
+
+            {interestingStats.highestScoring && interestingStats.highestScoring.total > 0 && (
+              <div className="fun-fact-card">
+                <span className="fun-fact-icon">🎯</span>
+                <div className="fun-fact-content">
+                  <span className="fun-fact-label">Most Goals in a Match</span>
+                  <span className="fun-fact-value">{interestingStats.highestScoring.total} goals</span>
+                  <span className="fun-fact-detail">{interestingStats.highestScoring.home} vs {interestingStats.highestScoring.away} (M{interestingStats.highestScoring.matchNum})</span>
+                </div>
+              </div>
+            )}
+
+            {interestingStats.topWinner && (
+              <div className="fun-fact-card">
+                <span className="fun-fact-icon">🏆</span>
+                <div className="fun-fact-content">
+                  <span className="fun-fact-label">Most Wins</span>
+                  <span className="fun-fact-value">{interestingStats.topWinner.team}</span>
+                  <span className="fun-fact-detail">{interestingStats.topWinner.wins} win{interestingStats.topWinner.wins !== 1 ? 's' : ''}</span>
+                </div>
+              </div>
+            )}
+
+            {interestingStats.draws > 0 && (
+              <div className="fun-fact-card">
+                <span className="fun-fact-icon">🤝</span>
+                <div className="fun-fact-content">
+                  <span className="fun-fact-label">Draws</span>
+                  <span className="fun-fact-value">{interestingStats.draws}</span>
+                  <span className="fun-fact-detail">match{interestingStats.draws !== 1 ? 'es' : ''} ended level</span>
+                </div>
+              </div>
+            )}
+
+            {interestingStats.hatTricks.length > 0 && interestingStats.hatTricks.map((ht, idx) => (
+              <div key={idx} className="fun-fact-card hat-trick">
+                <span className="fun-fact-icon">🎩</span>
+                <div className="fun-fact-content">
+                  <span className="fun-fact-label">Hat-trick!</span>
+                  <span className="fun-fact-value">{ht.player}</span>
+                  <span className="fun-fact-detail">{ht.goals} goals in M{ht.matchNum}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Poll Leaderboard */}
       {pollLeaderboard.length > 0 && (

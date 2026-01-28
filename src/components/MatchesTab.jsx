@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useApp } from '../contexts/AppContext';
-import { formatMatchDate } from '../data/schedule';
+import { formatMatchDate, getMatchday } from '../data/schedule';
 import MatchCard from './MatchCard';
+import './MatchesTab.css';
 
 const MatchesTab = () => {
   const { matches, loading } = useApp();
@@ -21,11 +22,15 @@ const MatchesTab = () => {
     // Sort dates
     return Object.entries(groups)
       .sort(([a], [b]) => new Date(a) - new Date(b))
-      .map(([date, dateMatches]) => ({
-        date,
-        dateLabel: formatMatchDate(date),
-        matches: dateMatches.sort((a, b) => a.time.localeCompare(b.time))
-      }));
+      .map(([date, dateMatches]) => {
+        const matchday = getMatchday(date);
+        return {
+          date,
+          dateLabel: formatMatchDate(date),
+          matchday,
+          matches: dateMatches.sort((a, b) => a.time.localeCompare(b.time))
+        };
+      });
   }, [matches]);
 
   // Get live matches first
@@ -60,9 +65,18 @@ const MatchesTab = () => {
 
       {/* All Matches by Date */}
       {groupedMatches.map(group => (
-        <section key={group.date}>
-          <div className="date-divider">
-            <span className="date-label">{group.dateLabel}</span>
+        <section key={group.date} className="matchday-section">
+          <div className="matchday-header">
+            <div className="matchday-info">
+              <span className="matchday-icon">{group.matchday.icon}</span>
+              <div className="matchday-text">
+                <span className="matchday-name">{group.matchday.name}</span>
+                <span className="matchday-date">{group.dateLabel}</span>
+              </div>
+            </div>
+            <div className="ground-info">
+              <span className="ground-name">{group.matchday.ground}</span>
+            </div>
           </div>
           {group.matches.map(match => (
             <MatchCard key={match.id} match={match} />

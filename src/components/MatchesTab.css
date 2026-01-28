@@ -1,0 +1,67 @@
+.matchday-section {
+  margin-bottom: 2rem;
+}
+
+.matchday-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, var(--primary-purple) 0%, var(--bg-card) 100%);
+  border: 1px solid rgba(255, 0, 90, 0.2);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.matchday-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.matchday-icon {
+  font-size: 1.5rem;
+}
+
+.matchday-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.matchday-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+}
+
+.matchday-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.ground-info {
+  text-align: right;
+}
+
+.ground-name {
+  font-size: 0.75rem;
+  color: var(--primary-pink);
+  font-weight: 600;
+  background: rgba(255, 0, 90, 0.1);
+  padding: 0.375rem 0.75rem;
+  border-radius: 100px;
+}
+
+@media (max-width: 400px) {
+  .matchday-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .ground-info {
+    text-align: left;
+  }
+}

@@ -8,6 +8,7 @@ import './MatchCard.css';
 const MatchCard = ({ match }) => {
   const { isAdmin } = useApp();
   const [showAdminModal, setShowAdminModal] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const homeTeam = TEAMS[match.home] || { name: 'TBD', shortName: 'TBD', logo: null };
   const awayTeam = TEAMS[match.away] || { name: 'TBD', shortName: 'TBD', logo: null };
@@ -28,17 +29,28 @@ const MatchCard = ({ match }) => {
     }
   };
 
-  // Get goal scorers for display
-  const getGoalScorers = (teamId) => {
-    return (match.goals || [])
-      .filter(g => g.team === teamId)
-      .map(g => g.player.split(' ')[0]) // First name only
-      .join(', ');
+  // Get detailed goals for expanded view
+  const getTeamGoals = (teamId) => {
+    return (match.goals || []).filter(g => g.team === teamId);
+  };
+
+  const homeGoals = getTeamGoals(match.home);
+  const awayGoals = getTeamGoals(match.away);
+  const hasGoals = homeGoals.length > 0 || awayGoals.length > 0;
+  const isClickable = match.status === 'ft' && hasGoals;
+
+  const handleCardClick = () => {
+    if (isClickable) {
+      setExpanded(!expanded);
+    }
   };
 
   return (
     <>
-      <div className={`match-card ${match.status} ${match.isFinal ? 'final' : ''}`}>
+      <div
+        className={`match-card ${match.status} ${match.isFinal ? 'final' : ''} ${expanded ? 'expanded' : ''} ${isClickable ? 'clickable' : ''}`}
+        onClick={handleCardClick}
+      >
         {match.isFinal && (
           <div className="final-badge">FINAL</div>
         )}
@@ -61,10 +73,7 @@ const MatchCard = ({ match }) => {
                 <div className="team-logo-placeholder">?</div>
               )}
             </div>
-            <span className="team-name">{homeTeam.shortName}</span>
-            {match.status !== 'upcoming' && (
-              <span className="goal-scorers">{getGoalScorers(match.home)}</span>
-            )}
+            <span className="team-name">{homeTeam.name}</span>
           </div>
 
           {/* Score */}
@@ -89,17 +98,62 @@ const MatchCard = ({ match }) => {
                 <div className="team-logo-placeholder">?</div>
               )}
             </div>
-            <span className="team-name">{awayTeam.shortName}</span>
-            {match.status !== 'upcoming' && (
-              <span className="goal-scorers">{getGoalScorers(match.away)}</span>
-            )}
+            <span className="team-name">{awayTeam.name}</span>
           </div>
         </div>
+
+        {/* Expand hint for completed matches with goals */}
+        {isClickable && !expanded && (
+          <div className="expand-hint">
+            <span>Tap to see scorers</span>
+            <span className="expand-icon">▼</span>
+          </div>
+        )}
+
+        {/* Expanded Goals Section */}
+        {expanded && (
+          <div className="goals-detail">
+            <div className="goals-column home-goals">
+              {homeGoals.length > 0 ? (
+                homeGoals.map((goal, idx) => (
+                  <div key={idx} className="goal-item">
+                    <span className="goal-icon">⚽</span>
+                    <span className="goal-scorer">{goal.player}</span>
+                    {goal.assist && (
+                      <span className="goal-assist">(A: {goal.assist})</span>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <span className="no-goals">-</span>
+              )}
+            </div>
+            <div className="goals-divider"></div>
+            <div className="goals-column away-goals">
+              {awayGoals.length > 0 ? (
+                awayGoals.map((goal, idx) => (
+                  <div key={idx} className="goal-item">
+                    <span className="goal-icon">⚽</span>
+                    <span className="goal-scorer">{goal.player}</span>
+                    {goal.assist && (
+                      <span className="goal-assist">(A: {goal.assist})</span>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <span className="no-goals">-</span>
+              )}
+            </div>
+          </div>
+        )}
 
         {isAdmin && (
           <button
             className="edit-button"
-            onClick={() => setShowAdminModal(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowAdminModal(true);
+            }}
           >
             Edit
           </button>
