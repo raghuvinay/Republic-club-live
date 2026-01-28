@@ -1,8 +1,8 @@
-# Republic Cup 2025 - Live Scorer & Polls
+# Republic Cup 2026 - Live Scorer & Polls
 
 A real-time football tournament tracking system built with React + Firebase Firestore. Features live match updates, auto-calculating league tables, top scorers leaderboard, and prediction polls.
 
-![Republic Cup](https://img.shields.io/badge/Republic%20Cup-2025-FF005A?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRDcwMCIgZD0iTTEyIDJMOSA5SDJMNyAxM0w1IDIwTDEyIDE2TDE5IDIwTDE3IDEzTDIyIDlIMTVMMTIgMloiLz48L3N2Zz4=)
+![Republic Cup](https://img.shields.io/badge/Republic%20Cup-2026-FF005A?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRDcwMCIgZD0iTTEyIDJMOSA5SDJMNyAxM0w1IDIwTDEyIDE2TDE5IDIwTDE3IDEzTDIyIDlIMTVMMTIgMloiLz48L3N2Zz4=)
 
 ## Features
 
@@ -157,4 +157,4 @@ Modify match dates, times, and matchups.
 
 ## License
 
-MIT License - Built for Republic Cup 2025
+MIT License - Built for Republic Cup 2026
