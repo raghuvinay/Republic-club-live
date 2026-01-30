@@ -173,6 +173,28 @@ export const AppProvider = ({ children }) => {
     return matches.filter(m => m.status === 'upcoming' && m.home !== 'tbd');
   }, [matches]);
 
+  // Get top 3 predicted players for a match
+  const getTopPredictedPlayers = useCallback((matchId) => {
+    const matchPredictions = predictions.filter(p => p.matchId === matchId);
+    const playerCounts = {};
+
+    matchPredictions.forEach(p => {
+      if (p.predictedPlayer) {
+        playerCounts[p.predictedPlayer] = (playerCounts[p.predictedPlayer] || 0) + 1;
+      }
+    });
+
+    return Object.entries(playerCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([player, count]) => ({ player, count }));
+  }, [predictions]);
+
+  // Get prediction count for a match
+  const getPredictionCount = useCallback((matchId) => {
+    return predictions.filter(p => p.matchId === matchId).length;
+  }, [predictions]);
+
   const value = {
     matches,
     predictions,
@@ -184,7 +206,9 @@ export const AppProvider = ({ children }) => {
     logoutAdmin,
     calculateTable,
     calculateTopScorers,
-    getUpcomingMatches
+    getUpcomingMatches,
+    getTopPredictedPlayers,
+    getPredictionCount
   };
 
   return (

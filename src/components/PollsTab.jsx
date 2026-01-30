@@ -5,12 +5,19 @@ import { submitPrediction, deleteAllPredictions } from '../firebase';
 import { formatMatchDate, formatMatchTime } from '../data/schedule';
 import './PollsTab.css';
 
+// Helper to extract name from email for display
+const extractName = (email) => {
+  if (!email) return '';
+  return email.replace('@scapia.cards', '');
+};
+
 const PollsTab = () => {
   const { getUpcomingMatches, predictions, matches, isAdmin } = useApp();
 
   // Load saved username from localStorage
   const [userName, setUserName] = useState(() => {
-    return localStorage.getItem('scapia-poll-username') || '';
+    const saved = localStorage.getItem('scapia-poll-username') || '';
+    return extractName(saved);
   });
   const [matchSelections, setMatchSelections] = useState({});
   const [submittingMatch, setSubmittingMatch] = useState(null);
@@ -19,25 +26,30 @@ const PollsTab = () => {
 
   const upcomingMatches = useMemo(() => getUpcomingMatches(), [getUpcomingMatches]);
 
-  // Get players for a specific match
+  // Get full email format
+  const getFullEmail = () => userName ? `${userName}@scapia.cards` : '';
+
+  // Get players for a specific match, grouped by team
   const getPlayersForMatch = (match) => {
     const homeTeam = TEAMS[match.home];
     const awayTeam = TEAMS[match.away];
-    const players = [];
 
-    if (homeTeam) {
-      homeTeam.players.forEach(p => {
-        players.push({ name: p, team: match.home, teamName: homeTeam.name, teamShort: homeTeam.shortName });
-      });
-    }
-
-    if (awayTeam) {
-      awayTeam.players.forEach(p => {
-        players.push({ name: p, team: match.away, teamName: awayTeam.name, teamShort: awayTeam.shortName });
-      });
-    }
-
-    return players;
+    return {
+      home: {
+        teamId: match.home,
+        teamName: homeTeam?.name,
+        teamShort: homeTeam?.shortName,
+        logo: homeTeam?.logo,
+        players: homeTeam?.players || []
+      },
+      away: {
+        teamId: match.away,
+        teamName: awayTeam?.name,
+        teamShort: awayTeam?.shortName,
+        logo: awayTeam?.logo,
+        players: awayTeam?.players || []
+      }
+    };
   };
 
   // Save username to localStorage
@@ -47,8 +59,19 @@ const PollsTab = () => {
     localStorage.setItem('scapia-poll-username', cleanValue);
   };
 
-  // Get full email
-  const getFullEmail = () => userName ? `${userName}@scapia.cards` : '';
+  // Check if user already voted for a match
+  const getUserPredictionForMatch = (matchId) => {
+    if (!userName) return null;
+    const fullEmail = getFullEmail();
+    return predictions.find(p =>
+      p.matchId === matchId && (p.userName === fullEmail || p.userName === userName)
+    );
+  };
+
+  // Select a player for a match
+  const selectPlayer = (matchId, playerName) => {
+    setMatchSelections(prev => ({ ...prev, [matchId]: playerName }));
+  };
 
   const handleSubmitForMatch = async (match) => {
     setError('');
@@ -69,31 +92,34 @@ const PollsTab = () => {
       return;
     }
 
+    if (getUserPredictionForMatch(match.id)) {
+      setError(`You already voted for Match ${match.matchNumber}`);
+      return;
+    }
+
     setSubmittingMatch(match.id);
 
     try {
-      const players = getPlayersForMatch(match);
-      const player = players.find(p => p.name === selectedPlayer);
+      const teams = getPlayersForMatch(match);
+      const isHomePlayer = teams.home.players.includes(selectedPlayer);
+      const team = isHomePlayer ? teams.home : teams.away;
 
       await submitPrediction({
         userName: getFullEmail(),
         matchId: match.id,
         matchNumber: match.matchNumber,
         predictedPlayer: selectedPlayer,
-        predictedTeam: player?.team,
-        predictedTeamName: player?.teamName
+        predictedTeam: team.teamId,
+        predictedTeamName: team.teamName
       });
 
       setSubmittedMatches(prev => ({ ...prev, [match.id]: true }));
-
-      // Clear selection after successful submit
       setMatchSelections(prev => {
         const newSelections = { ...prev };
         delete newSelections[match.id];
         return newSelections;
       });
 
-      // Reset success after 3 seconds
       setTimeout(() => {
         setSubmittedMatches(prev => ({ ...prev, [match.id]: false }));
       }, 3000);
@@ -104,32 +130,51 @@ const PollsTab = () => {
     }
   };
 
-  // Check if a match has started (live or finished)
-  const isMatchStarted = (matchId) => {
-    const match = matches.find(m => m.id === matchId);
-    return match && (match.status === 'live' || match.status === 'ft');
-  };
-
   // Get matches with published Man of the Match winners
   const PRIZE_POOL = 1000;
   const winnersHistory = useMemo(() => {
     return matches
       .filter(m => m.momPublishedAt)
-      .sort((a, b) => a.matchNumber - b.matchNumber) // Sort 1 to 15
+      .sort((a, b) => a.matchNumber - b.matchNumber)
       .map(m => {
         const winners = m.momWinners || [];
         const coinsPerWinner = winners.length > 0 ? Math.floor(PRIZE_POOL / winners.length) : 0;
         return {
           matchNumber: m.matchNumber,
+          matchId: m.id,
           homeTeam: TEAMS[m.home]?.shortName || m.home,
           awayTeam: TEAMS[m.away]?.shortName || m.away,
           score: `${m.scoreHome}-${m.scoreAway}`,
           manOfTheMatch: m.manOfTheMatch,
           winners,
+          winnersDisplay: winners.map(w => extractName(w)),
           coinsPerWinner
         };
       });
   }, [matches]);
+
+  // Calculate user's total earnings
+  const userEarnings = useMemo(() => {
+    if (!userName) return { total: 0, wins: [] };
+    const fullEmail = getFullEmail();
+    let total = 0;
+    const wins = [];
+
+    winnersHistory.forEach(item => {
+      const isWinner = item.winners.some(w =>
+        w === fullEmail || w === userName || extractName(w) === userName
+      );
+      if (isWinner) {
+        total += item.coinsPerWinner;
+        wins.push({
+          matchNumber: item.matchNumber,
+          coins: item.coinsPerWinner
+        });
+      }
+    });
+
+    return { total, wins };
+  }, [userName, winnersHistory]);
 
   // Count predictions per match
   const getPredictionCount = (matchId) => {
@@ -138,10 +183,54 @@ const PollsTab = () => {
 
   const totalPredictions = predictions.length;
 
+  // Calculate poll leaderboard (total coins won per person) - Top 20
+  const pollLeaderboard = useMemo(() => {
+    const earnings = {};
+
+    matches.filter(m => m.momPublishedAt && m.momWinners?.length > 0).forEach(match => {
+      const coinsPerWinner = Math.floor(PRIZE_POOL / match.momWinners.length);
+      match.momWinners.forEach(winner => {
+        const cleanName = extractName(winner);
+        if (!earnings[cleanName]) {
+          earnings[cleanName] = { name: cleanName, coins: 0, wins: 0 };
+        }
+        earnings[cleanName].coins += coinsPerWinner;
+        earnings[cleanName].wins++;
+      });
+    });
+
+    return Object.values(earnings)
+      .sort((a, b) => b.coins - a.coins)
+      .slice(0, 20);
+  }, [matches]);
+
   return (
     <div className="tab-content">
+      {/* My Earnings Section - Always at Top */}
+      {userName && userEarnings.total > 0 && (
+        <section className="my-earnings-section animate-slide-up">
+          <div className="earnings-card">
+            <div className="earnings-header">
+              <span className="earnings-icon">💰</span>
+              <span className="earnings-title">MY EARNINGS</span>
+            </div>
+            <div className="earnings-amount">
+              <span className="earnings-coins">{userEarnings.total}</span>
+              <span className="earnings-label">COINS</span>
+            </div>
+            <div className="earnings-breakdown">
+              {userEarnings.wins.map((win, idx) => (
+                <span key={idx} className="earnings-win">
+                  M{win.matchNumber}: +{win.coins}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Hero Section */}
-      <section className="poll-hero animate-slide-up">
+      <section className="poll-hero animate-slide-up" style={{ animationDelay: userName && userEarnings.total > 0 ? '0.05s' : '0s' }}>
         <div className="hero-coins-highlight">
           <div className="coins-amount">
             <span className="coins-number">1000</span>
@@ -181,7 +270,7 @@ const PollsTab = () => {
 
           <div className="winners-list">
             {winnersHistory.map(item => (
-              <div key={item.matchNumber} className="winner-card">
+              <div key={item.matchNumber} className="winner-card compact">
                 <div className="winner-match-info">
                   <span className="winner-match-num">M{item.matchNumber}</span>
                   <span className="winner-teams">{item.homeTeam} vs {item.awayTeam}</span>
@@ -192,13 +281,22 @@ const PollsTab = () => {
                     <span className="mom-label">MoM:</span>
                     <span className="mom-name">{item.manOfTheMatch}</span>
                   </div>
-                  {item.winners.length > 0 ? (
+                  {item.winnersDisplay.length > 0 ? (
                     <div className="winner-info">
-                      <div className="winner-names">
-                        {item.winners.map((name, idx) => (
-                          <span key={idx} className="winner-badge">{name}</span>
-                        ))}
-                      </div>
+                      {item.winnersDisplay.length <= 3 ? (
+                        <div className="winner-names">
+                          {item.winnersDisplay.map((name, idx) => (
+                            <span key={idx} className="winner-badge">{name}</span>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="winner-names compact-winners">
+                          {item.winnersDisplay.slice(0, 2).map((name, idx) => (
+                            <span key={idx} className="winner-badge">{name}</span>
+                          ))}
+                          <span className="winner-badge more-badge">+{item.winnersDisplay.length - 2} more</span>
+                        </div>
+                      )}
                       <span className="coins-earned">{item.coinsPerWinner} coins each</span>
                     </div>
                   ) : (
@@ -211,7 +309,7 @@ const PollsTab = () => {
         </section>
       )}
 
-      {/* User Name Input - Sticky */}
+      {/* User Name Input */}
       <section className="poll-section animate-slide-up" style={{ animationDelay: '0.1s' }}>
         <div className="section-header">
           <h2 className="section-title">MAKE YOUR PREDICTION</h2>
@@ -242,7 +340,7 @@ const PollsTab = () => {
         </div>
       </section>
 
-      {/* Match Cards for Voting */}
+      {/* Match Cards for Voting - New Tap-friendly Design */}
       {upcomingMatches.length > 0 && (
         <section className="vote-cards-section animate-slide-up" style={{ animationDelay: '0.15s' }}>
           <div className="section-header">
@@ -252,16 +350,17 @@ const PollsTab = () => {
 
           <div className="vote-cards-list">
             {upcomingMatches.map(match => {
-              const homeTeam = TEAMS[match.home];
-              const awayTeam = TEAMS[match.away];
-              const players = getPlayersForMatch(match);
+              const teams = getPlayersForMatch(match);
               const isLocked = match.predictionsLocked;
               const isSubmitting = submittingMatch === match.id;
               const isSubmitted = submittedMatches[match.id];
               const predCount = getPredictionCount(match.id);
+              const existingVote = getUserPredictionForMatch(match.id);
+              const hasVoted = !!existingVote;
+              const selectedPlayer = matchSelections[match.id];
 
               return (
-                <div key={match.id} className={`vote-card ${isLocked ? 'locked' : ''} ${isSubmitted ? 'submitted' : ''}`}>
+                <div key={match.id} className={`vote-card ${isLocked ? 'locked' : ''} ${isSubmitted || hasVoted ? 'submitted' : ''}`}>
                   <div className="vote-card-header">
                     <span className="vote-match-num">Match {match.matchNumber}</span>
                     <div className="vote-card-meta">
@@ -272,21 +371,13 @@ const PollsTab = () => {
                     </div>
                   </div>
 
-                  <div className="vote-card-teams">
-                    <div className="vote-team">
-                      {homeTeam?.logo && <img src={homeTeam.logo} alt={homeTeam.name} className="vote-team-logo" />}
-                      <span>{homeTeam?.shortName}</span>
-                    </div>
-                    <span className="vote-vs">vs</span>
-                    <div className="vote-team">
-                      {awayTeam?.logo && <img src={awayTeam.logo} alt={awayTeam.name} className="vote-team-logo" />}
-                      <span>{awayTeam?.shortName}</span>
-                    </div>
-                  </div>
-
                   {isSubmitted ? (
                     <div className="vote-success">
                       <span className="success-icon">✓</span> Vote Submitted!
+                    </div>
+                  ) : hasVoted ? (
+                    <div className="vote-success already-voted">
+                      <span className="success-icon">✓</span> You picked: <strong>{existingVote.predictedPlayer}</strong>
                     </div>
                   ) : isLocked ? (
                     <div className="vote-locked">
@@ -294,23 +385,57 @@ const PollsTab = () => {
                     </div>
                   ) : (
                     <>
-                      <select
-                        className="vote-player-select"
-                        value={matchSelections[match.id] || ''}
-                        onChange={(e) => setMatchSelections(prev => ({ ...prev, [match.id]: e.target.value }))}
-                      >
-                        <option value="">Who will score the most goals?</option>
-                        {players.map(player => (
-                          <option key={`${match.id}-${player.name}`} value={player.name}>
-                            {player.name} ({player.teamShort})
-                          </option>
-                        ))}
-                      </select>
+                      {/* Team-based player selection */}
+                      <div className="player-selection">
+                        {/* Home Team */}
+                        <div className="team-players-section">
+                          <div className="team-players-header">
+                            {teams.home.logo && <img src={teams.home.logo} alt={teams.home.teamName} className="team-players-logo" />}
+                            <span className="team-players-name">{teams.home.teamShort}</span>
+                          </div>
+                          <div className="player-chips">
+                            {teams.home.players.map(player => (
+                              <button
+                                key={`${match.id}-${player}`}
+                                className={`player-chip ${selectedPlayer === player ? 'selected' : ''}`}
+                                onClick={() => selectPlayer(match.id, player)}
+                              >
+                                {player}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Away Team */}
+                        <div className="team-players-section">
+                          <div className="team-players-header">
+                            {teams.away.logo && <img src={teams.away.logo} alt={teams.away.teamName} className="team-players-logo" />}
+                            <span className="team-players-name">{teams.away.teamShort}</span>
+                          </div>
+                          <div className="player-chips">
+                            {teams.away.players.map(player => (
+                              <button
+                                key={`${match.id}-${player}`}
+                                className={`player-chip ${selectedPlayer === player ? 'selected' : ''}`}
+                                onClick={() => selectPlayer(match.id, player)}
+                              >
+                                {player}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {selectedPlayer && (
+                        <div className="selected-player-display">
+                          Your pick: <strong>{selectedPlayer}</strong>
+                        </div>
+                      )}
 
                       <button
                         className="vote-submit-btn"
                         onClick={() => handleSubmitForMatch(match)}
-                        disabled={!matchSelections[match.id] || !userName || isSubmitting}
+                        disabled={!selectedPlayer || !userName || isSubmitting}
                       >
                         {isSubmitting ? 'Submitting...' : 'Submit Vote'}
                       </button>
@@ -323,9 +448,37 @@ const PollsTab = () => {
         </section>
       )}
 
+      {/* Poll Leaderboard */}
+      {pollLeaderboard.length > 0 && (
+        <section className="poll-leaderboard-section animate-slide-up" style={{ animationDelay: '0.2s' }}>
+          <div className="section-header">
+            <h2 className="section-title">POLL LEADERBOARD</h2>
+            <span className="section-badge coins-badge">💰 TOP 20</span>
+          </div>
+
+          <div className="leaderboard-list">
+            {pollLeaderboard.map((player, index) => (
+              <div
+                key={player.name}
+                className={`leaderboard-row ${index === 0 ? 'leader' : ''} ${player.name === userName ? 'is-me' : ''}`}
+              >
+                <span className="leaderboard-rank">
+                  {index === 0 ? '💰' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
+                </span>
+                <div className="leaderboard-info">
+                  <span className="leaderboard-name">{player.name}</span>
+                  <span className="leaderboard-wins">{player.wins} win{player.wins !== 1 ? 's' : ''}</span>
+                </div>
+                <span className="leaderboard-coins">{player.coins}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Recent Predictions */}
       {predictions.length > 0 && (
-        <section className="recent-section animate-slide-up" style={{ animationDelay: '0.2s' }}>
+        <section className="recent-section animate-slide-up" style={{ animationDelay: '0.25s' }}>
           <div className="section-header">
             <h2 className="section-title">RECENT PREDICTIONS</h2>
             <span className="section-badge">{predictions.length}</span>
@@ -335,15 +488,11 @@ const PollsTab = () => {
             {predictions.slice(0, 10).map(pred => (
               <div key={pred.id} className="prediction-item">
                 <div className="prediction-user">
-                  <span className="user-avatar">{pred.userName?.charAt(0).toUpperCase()}</span>
-                  <span className="user-name">{pred.userName}</span>
+                  <span className="user-avatar">{extractName(pred.userName)?.charAt(0).toUpperCase()}</span>
+                  <span className="user-name">{extractName(pred.userName)}</span>
                 </div>
                 <div className="prediction-detail">
-                  {isMatchStarted(pred.matchId) ? (
-                    <span className="predicted-player">{pred.predictedPlayer}</span>
-                  ) : (
-                    <span className="predicted-player hidden-vote">Hidden</span>
-                  )}
+                  <span className="predicted-player">{pred.predictedPlayer}</span>
                   <span className="predicted-match">Match {pred.matchNumber}</span>
                 </div>
               </div>

@@ -32,6 +32,14 @@ const TableTab = () => {
       .slice(0, 5);
   }, [matches]);
 
+  // Goalkeeper data for Golden Glove
+  const GOALKEEPERS = {
+    'dhurandhars': { name: 'Sukhpal Singh', team: 'dhurandhars' },
+    'feel-united': { name: 'Sandipan', team: 'feel-united' },
+    'goaldiggers': { name: 'Navdeep', team: 'goaldiggers' },
+    'userflow': { name: 'Hriday Bhatia', team: 'userflow' }
+  };
+
   // Calculate clean sheets by team
   const cleanSheets = useMemo(() => {
     const sheets = {};
@@ -53,26 +61,48 @@ const TableTab = () => {
       .sort((a, b) => b.count - a.count);
   }, [matches]);
 
-  // Calculate poll leaderboard (total coins won per person)
-  const PRIZE_POOL = 1000;
-  const pollLeaderboard = useMemo(() => {
-    const earnings = {};
+  // Calculate Golden Glove standings (clean sheets per goalkeeper)
+  const goldenGlove = useMemo(() => {
+    return cleanSheets
+      .filter(item => GOALKEEPERS[item.teamId])
+      .map(item => ({
+        ...item,
+        goalkeeper: GOALKEEPERS[item.teamId].name,
+        teamName: TEAMS[item.teamId]?.name
+      }))
+      .sort((a, b) => b.count - a.count);
+  }, [cleanSheets]);
 
-    matches.filter(m => m.momPublishedAt && m.momWinners?.length > 0).forEach(match => {
-      const coinsPerWinner = Math.floor(PRIZE_POOL / match.momWinners.length);
-      match.momWinners.forEach(winner => {
-        if (!earnings[winner]) {
-          earnings[winner] = { name: winner, coins: 0, wins: 0 };
+  // Calculate fan favourites - overall player votes across all predictions
+  const fanFavourites = useMemo(() => {
+    const playerVotes = {};
+
+    predictions.forEach(p => {
+      if (p.predictedPlayer) {
+        if (!playerVotes[p.predictedPlayer]) {
+          playerVotes[p.predictedPlayer] = {
+            player: p.predictedPlayer,
+            votes: 0,
+            team: p.predictedTeam,
+            teamName: p.predictedTeamName
+          };
         }
-        earnings[winner].coins += coinsPerWinner;
-        earnings[winner].wins++;
-      });
+        playerVotes[p.predictedPlayer].votes++;
+      }
     });
 
-    return Object.values(earnings)
-      .sort((a, b) => b.coins - a.coins)
+    const sorted = Object.values(playerVotes)
+      .sort((a, b) => b.votes - a.votes)
       .slice(0, 10);
-  }, [matches]);
+
+    // Calculate max for percentage bar
+    const maxVotes = sorted.length > 0 ? sorted[0].votes : 0;
+
+    return sorted.map(p => ({
+      ...p,
+      percentage: maxVotes > 0 ? Math.round((p.votes / maxVotes) * 100) : 0
+    }));
+  }, [predictions]);
 
   // Calculate interesting stats
   const interestingStats = useMemo(() => {
@@ -274,8 +304,40 @@ const TableTab = () => {
         </section>
       )}
 
-      {/* Clean Sheets */}
+      {/* Golden Glove */}
       <section className="scorers-section animate-slide-up" style={{ animationDelay: '0.3s' }}>
+        <div className="section-header">
+          <h2 className="section-title">GOLDEN GLOVE</h2>
+          <span className="section-badge glove-badge">🧤</span>
+        </div>
+
+        <div className="scorers-list">
+          {goldenGlove.map((item, index) => {
+            const team = TEAMS[item.teamId];
+            if (!team) return null;
+            return (
+              <div
+                key={item.teamId}
+                className={`scorer-row ${index === 0 && item.count > 0 ? 'leader glove-leader' : ''}`}
+                style={{ animationDelay: `${(index + 4) * 0.05}s` }}
+              >
+                <span className="scorer-rank">
+                  {index === 0 && item.count > 0 ? '🧤' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
+                </span>
+                <div className="scorer-info">
+                  <img src={team.logo} alt={team.name} className="table-team-logo" />
+                  <span className="scorer-name">{item.goalkeeper}</span>
+                  <span className="scorer-team">{team.shortName}</span>
+                </div>
+                <span className="scorer-goals">{item.count}</span>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Clean Sheets by Team */}
+      <section className="scorers-section animate-slide-up" style={{ animationDelay: '0.35s' }}>
         <div className="section-header">
           <h2 className="section-title">CLEAN SHEETS</h2>
         </div>
@@ -303,6 +365,41 @@ const TableTab = () => {
           })}
         </div>
       </section>
+
+      {/* Fan Favourites - Overall Player Votes */}
+      {fanFavourites.length > 0 && (
+        <section className="fan-favourites-table-section animate-slide-up" style={{ animationDelay: '0.4s' }}>
+          <div className="section-header">
+            <h2 className="section-title">FAN FAVOURITES</h2>
+            <span className="section-badge fire-badge">🔥 {predictions.length} votes</span>
+          </div>
+
+          <div className="fan-favourites-chart">
+            {fanFavourites.map((player, index) => (
+              <div key={player.player} className={`fan-chart-row ${index === 0 ? 'leader' : ''}`}>
+                <div className="fan-chart-rank">
+                  {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
+                </div>
+                <div className="fan-chart-info">
+                  <div className="fan-chart-header">
+                    <span className="fan-chart-name">{player.player}</span>
+                    <span className="fan-chart-votes">{player.votes}</span>
+                  </div>
+                  <div className="fan-chart-bar-bg">
+                    <div
+                      className="fan-chart-bar-fill"
+                      style={{ width: `${player.percentage}%` }}
+                    ></div>
+                  </div>
+                  {player.teamName && (
+                    <span className="fan-chart-team">{TEAMS[player.team]?.shortName || player.teamName}</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Stats Summary */}
       <section className="stats-section animate-slide-up" style={{ animationDelay: '0.35s' }}>
@@ -400,34 +497,6 @@ const TableTab = () => {
         </section>
       )}
 
-      {/* Poll Leaderboard */}
-      {pollLeaderboard.length > 0 && (
-        <section className="scorers-section poll-leaderboard animate-slide-up" style={{ animationDelay: '0.4s' }}>
-          <div className="section-header">
-            <h2 className="section-title">POLL LEADERBOARD</h2>
-            <span className="section-badge coins-badge">COINS</span>
-          </div>
-
-          <div className="scorers-list">
-            {pollLeaderboard.map((player, index) => (
-              <div
-                key={player.name}
-                className={`scorer-row ${index === 0 ? 'leader coins-leader' : ''}`}
-                style={{ animationDelay: `${(index + 4) * 0.05}s` }}
-              >
-                <span className="scorer-rank">
-                  {index === 0 ? '💰' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
-                </span>
-                <div className="scorer-info">
-                  <span className="scorer-name">{player.name}</span>
-                  <span className="scorer-team">{player.wins} win{player.wins !== 1 ? 's' : ''}</span>
-                </div>
-                <span className="scorer-goals coins-value">{player.coins}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 };

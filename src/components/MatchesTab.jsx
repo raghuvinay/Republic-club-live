@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { formatMatchDate, getMatchday } from '../data/schedule';
 import MatchCard from './MatchCard';
@@ -6,6 +6,7 @@ import './MatchesTab.css';
 
 const MatchesTab = () => {
   const { matches, loading } = useApp();
+  const [collapsedMatchdays, setCollapsedMatchdays] = useState({});
 
   // Group matches by date
   const groupedMatches = useMemo(() => {
@@ -60,6 +61,24 @@ const MatchesTab = () => {
   const completedMatches = matches.filter(m => m.status === 'ft').length;
   const progressPercent = totalMatches > 0 ? Math.round((completedMatches / totalMatches) * 100) : 0;
 
+  // Determine which matchdays should be collapsed by default
+  // Completed matchdays are collapsed, current/upcoming are expanded
+  const getDefaultCollapsed = (matchday, isComplete, hasStarted) => {
+    // If user has explicitly toggled, use their preference
+    if (collapsedMatchdays[matchday] !== undefined) {
+      return collapsedMatchdays[matchday];
+    }
+    // Default: collapse completed matchdays
+    return isComplete;
+  };
+
+  const toggleMatchday = (matchday) => {
+    setCollapsedMatchdays(prev => ({
+      ...prev,
+      [matchday]: !getDefaultCollapsed(matchday, groupedMatches.find(g => g.matchday.name === matchday)?.stats.isComplete, true)
+    }));
+  };
+
   if (loading) {
     return (
       <div className="tab-content">
@@ -105,63 +124,73 @@ const MatchesTab = () => {
       )}
 
       {/* All Matches by Date */}
-      {groupedMatches.map((group, groupIndex) => (
-        <section
-          key={group.date}
-          className={`matchday-section ${group.stats.isComplete ? 'completed' : ''} ${group.stats.isLive ? 'has-live' : ''}`}
-          style={{ animationDelay: `${0.05 + groupIndex * 0.05}s` }}
-        >
-          <div className="matchday-header">
-            <div className="matchday-info">
-              <span className="matchday-icon">{group.matchday.icon}</span>
-              <div className="matchday-text">
-                <span className="matchday-name">{group.matchday.name}</span>
-                <span className="matchday-date">{group.dateLabel}</span>
-              </div>
-            </div>
-            <div className="matchday-meta">
-              <span className="ground-name">{group.matchday.ground}</span>
-              {group.stats.hasStarted && (
-                <div className="matchday-stats">
-                  {group.stats.isComplete ? (
-                    <span className="stat-badge complete">
-                      <span className="stat-icon">✓</span>
-                      {group.stats.totalGoals} goals
-                    </span>
-                  ) : group.stats.isLive ? (
-                    <span className="stat-badge live">
-                      <span className="live-dot"></span>
-                      {group.stats.live} LIVE
-                    </span>
-                  ) : (
-                    <span className="stat-badge partial">
-                      {group.stats.completed}/{group.stats.total}
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
+      {groupedMatches.map((group, groupIndex) => {
+        const isCollapsed = getDefaultCollapsed(group.matchday.name, group.stats.isComplete, group.stats.hasStarted);
 
-          {/* Matches with timeline */}
-          <div className="matchday-matches">
-            {group.matches.map((match, index) => (
-              <div key={match.id} className="match-timeline-item">
-                {/* Timeline connector */}
-                <div className="timeline-connector">
-                  <div className={`timeline-dot ${match.status}`}></div>
-                  {index < group.matches.length - 1 && (
-                    <div className="timeline-line"></div>
-                  )}
-                </div>
-                <div className="match-content">
-                  <MatchCard match={match} />
+        return (
+          <section
+            key={group.date}
+            className={`matchday-section ${group.stats.isComplete ? 'completed' : ''} ${group.stats.isLive ? 'has-live' : ''} ${isCollapsed ? 'collapsed' : ''}`}
+            style={{ animationDelay: `${0.05 + groupIndex * 0.05}s` }}
+          >
+            <div
+              className="matchday-header clickable"
+              onClick={() => toggleMatchday(group.matchday.name)}
+            >
+              <div className="matchday-info">
+                <span className="matchday-icon">{group.matchday.icon}</span>
+                <div className="matchday-text">
+                  <span className="matchday-name">{group.matchday.name}</span>
+                  <span className="matchday-date">{group.dateLabel}</span>
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
-      ))}
+              <div className="matchday-meta">
+                <span className="ground-name">{group.matchday.ground}</span>
+                {group.stats.hasStarted && (
+                  <div className="matchday-stats">
+                    {group.stats.isComplete ? (
+                      <span className="stat-badge complete">
+                        <span className="stat-icon">✓</span>
+                        {group.stats.totalGoals} goals
+                      </span>
+                    ) : group.stats.isLive ? (
+                      <span className="stat-badge live">
+                        <span className="live-dot"></span>
+                        {group.stats.live} LIVE
+                      </span>
+                    ) : (
+                      <span className="stat-badge partial">
+                        {group.stats.completed}/{group.stats.total}
+                      </span>
+                    )}
+                  </div>
+                )}
+                <span className={`collapse-icon ${isCollapsed ? 'collapsed' : ''}`}>▼</span>
+              </div>
+            </div>
+
+            {/* Matches with timeline - only show when not collapsed */}
+            {!isCollapsed && (
+              <div className="matchday-matches">
+                {group.matches.map((match, index) => (
+                  <div key={match.id} className="match-timeline-item">
+                    {/* Timeline connector */}
+                    <div className="timeline-connector">
+                      <div className={`timeline-dot ${match.status}`}></div>
+                      {index < group.matches.length - 1 && (
+                        <div className="timeline-line"></div>
+                      )}
+                    </div>
+                    <div className="match-content">
+                      <MatchCard match={match} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        );
+      })}
 
       {matches.length === 0 && (
         <div className="empty-state">

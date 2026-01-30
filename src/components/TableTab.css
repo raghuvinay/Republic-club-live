@@ -6,30 +6,37 @@
 
 /* League Table */
 .league-table {
-  background: var(--bg-card);
+  background: linear-gradient(180deg, rgba(56, 0, 60, 0.6) 0%, rgba(13, 5, 24, 0.9) 100%);
   border-radius: 12px;
   overflow: hidden;
+  border: 1px solid rgba(255, 0, 90, 0.2);
 }
 
 .table-header {
   display: flex;
   align-items: center;
-  padding: 0.75rem 1rem;
-  background: var(--primary-purple);
+  padding: 0.875rem 1rem;
+  background: linear-gradient(90deg, rgba(255, 0, 90, 0.3) 0%, rgba(255, 215, 0, 0.15) 50%, rgba(255, 0, 90, 0.3) 100%);
   font-size: 0.6875rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
+  letter-spacing: 0.1em;
+  color: #FFD700;
+  border-bottom: 2px solid rgba(255, 215, 0, 0.3);
 }
 
 .table-row {
   display: flex;
   align-items: center;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  transition: background 0.2s;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s;
   animation: slideUp 0.3s ease-out backwards;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.table-row:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .table-row:last-child {
@@ -37,11 +44,17 @@
 }
 
 .table-row:hover {
-  background: var(--bg-card-hover);
+  background: rgba(255, 0, 90, 0.1);
+  transform: scale(1.01);
 }
 
 .table-row.qualified {
-  background: rgba(0, 255, 136, 0.05);
+  background: linear-gradient(90deg, rgba(0, 255, 136, 0.15) 0%, rgba(0, 255, 136, 0.05) 100%);
+  border-left: 3px solid var(--status-live);
+}
+
+.table-row.qualified:nth-child(odd) {
+  background: linear-gradient(90deg, rgba(0, 255, 136, 0.18) 0%, rgba(0, 255, 136, 0.08) 100%);
 }
 
 .col-pos {
@@ -141,18 +154,24 @@
 
 /* Top Scorers */
 .scorers-list {
-  background: var(--bg-card);
+  background: linear-gradient(180deg, rgba(56, 0, 60, 0.5) 0%, rgba(13, 5, 24, 0.8) 100%);
   border-radius: 12px;
   overflow: hidden;
+  border: 1px solid rgba(255, 0, 90, 0.15);
 }
 
 .scorer-row {
   display: flex;
   align-items: center;
   padding: 0.875rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  transition: background 0.2s;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.2s;
   animation: slideUp 0.3s ease-out backwards;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.scorer-row:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .scorer-row:last-child {
@@ -160,11 +179,13 @@
 }
 
 .scorer-row:hover {
-  background: var(--bg-card-hover);
+  background: rgba(255, 0, 90, 0.1);
+  transform: translateX(4px);
 }
 
 .scorer-row.leader {
-  background: linear-gradient(90deg, rgba(255, 215, 0, 0.1) 0%, transparent 100%);
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.05) 100%);
+  border-left: 3px solid #FFD700;
 }
 
 .scorer-rank {
@@ -211,6 +232,17 @@
   color: var(--bg-dark);
 }
 
+.section-badge.glove-badge {
+  background: linear-gradient(135deg, #00bfff 0%, #0080ff 100%);
+  color: white;
+}
+
+/* Golden Glove Leader */
+.scorer-row.glove-leader {
+  background: linear-gradient(90deg, rgba(0, 191, 255, 0.15) 0%, rgba(0, 128, 255, 0.05) 100%);
+  border-left: 3px solid #00bfff;
+}
+
 /* Leader variations */
 .scorer-row.assist-leader {
   background: linear-gradient(90deg, rgba(0, 200, 255, 0.1) 0%, transparent 100%);
@@ -221,7 +253,105 @@
 }
 
 .scorer-row.coins-leader {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.25) 0%, rgba(255, 140, 0, 0.1) 100%);
+  border-left: 3px solid #FFD700;
+}
+
+/* Poll Leaderboard Special Styling */
+.poll-leaderboard .scorers-list {
+  background: linear-gradient(180deg, rgba(255, 215, 0, 0.1) 0%, rgba(56, 0, 60, 0.5) 50%, rgba(13, 5, 24, 0.8) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+/* Fan Favourites Chart */
+.fan-favourites-table-section {
+  margin-bottom: 2rem;
+}
+
+.fire-badge {
+  background: linear-gradient(135deg, #ff6b00 0%, #ff0066 100%) !important;
+  color: white !important;
+}
+
+.fan-favourites-chart {
+  background: linear-gradient(180deg, rgba(255, 107, 0, 0.1) 0%, rgba(56, 0, 60, 0.5) 100%);
+  border-radius: 12px;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 107, 0, 0.2);
+}
+
+.fan-chart-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.5rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.fan-chart-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.fan-chart-row.leader {
   background: linear-gradient(90deg, rgba(255, 215, 0, 0.15) 0%, transparent 100%);
+}
+
+.fan-chart-rank {
+  width: 28px;
+  text-align: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.fan-chart-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.fan-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.375rem;
+}
+
+.fan-chart-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fan-chart-votes {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.125rem;
+  color: #ff6b00;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.fan-chart-bar-bg {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.fan-chart-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff6b00, #ff0066);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.fan-chart-team {
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  display: block;
 }
 
 .assist-count {
@@ -260,24 +390,34 @@
 }
 
 .stat-card {
-  background: var(--bg-card);
+  background: linear-gradient(135deg, rgba(255, 0, 90, 0.15) 0%, rgba(56, 0, 60, 0.4) 100%);
   border-radius: 12px;
   padding: 1rem;
   text-align: center;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  border: 1px solid rgba(255, 0, 90, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 0, 90, 0.2);
 }
 
 .stat-value {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 2rem;
-  color: var(--primary-pink);
+  background: linear-gradient(180deg, #FF005A 0%, #FFD700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .stat-label {
   font-size: 0.625rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -294,23 +434,25 @@
 }
 
 .fun-fact-card {
-  background: var(--bg-card);
+  background: linear-gradient(135deg, rgba(56, 0, 60, 0.6) 0%, rgba(26, 10, 46, 0.8) 100%);
   border-radius: 12px;
   padding: 1rem;
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
   transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .fun-fact-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(255, 0, 90, 0.15);
+  border-color: rgba(255, 0, 90, 0.3);
 }
 
 .fun-fact-card.hat-trick {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, var(--bg-card) 100%);
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(56, 0, 60, 0.6) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.3);
 }
 
 .fun-fact-icon {

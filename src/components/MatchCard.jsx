@@ -6,7 +6,7 @@ import AdminModal from './AdminModal';
 import './MatchCard.css';
 
 const MatchCard = ({ match }) => {
-  const { isAdmin } = useApp();
+  const { isAdmin, getTopPredictedPlayers, getPredictionCount } = useApp();
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -117,7 +117,7 @@ const MatchCard = ({ match }) => {
         {/* Expand hint for upcoming matches */}
         {isUpcoming && !expanded && (
           <div className="expand-hint">
-            <span>Tap to see squads</span>
+            <span>Tap to see squads & fan picks</span>
             <span className="expand-icon">▼</span>
           </div>
         )}
@@ -162,33 +162,61 @@ const MatchCard = ({ match }) => {
         {/* Expanded Roster Section - for upcoming matches */}
         {expanded && isUpcoming && (
           <div className="roster-detail">
-            <div className="roster-column home-roster">
-              <div className="roster-header">
-                <span className="manager-label">Manager</span>
-                <span className="manager-name">{homeTeam.manager || 'TBD'}</span>
-              </div>
-              <div className="roster-players">
-                {homeTeam.players?.map((player, idx) => (
-                  <div key={idx} className="roster-player">
-                    <span className="player-number">{idx + 1}</span>
-                    <span className="player-name">{player}</span>
+            {/* Fan Favourites Section */}
+            {(() => {
+              const topPlayers = getTopPredictedPlayers(match.id);
+              const voteCount = getPredictionCount(match.id);
+              if (topPlayers.length > 0) {
+                return (
+                  <div className="fan-picks-section">
+                    <div className="fan-picks-header">
+                      <span className="fan-picks-title">🔥 Fan Picks</span>
+                      <span className="fan-picks-count">{voteCount} votes</span>
+                    </div>
+                    <div className="fan-picks-list">
+                      {topPlayers.map((item, idx) => (
+                        <div key={idx} className={`fan-pick-item rank-${idx + 1}`}>
+                          <span className="fan-pick-rank">{idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉'}</span>
+                          <span className="fan-pick-name">{item.player}</span>
+                          <span className="fan-pick-votes">{item.count}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                ))}
+                );
+              }
+              return null;
+            })()}
+
+            <div className="roster-columns">
+              <div className="roster-column home-roster">
+                <div className="roster-header">
+                  <span className="manager-label">Manager</span>
+                  <span className="manager-name">{homeTeam.manager || 'TBD'}</span>
+                </div>
+                <div className="roster-players">
+                  {homeTeam.players?.map((player, idx) => (
+                    <div key={idx} className="roster-player">
+                      <span className="player-number">{idx + 1}</span>
+                      <span className="player-name">{player}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="roster-divider"></div>
-            <div className="roster-column away-roster">
-              <div className="roster-header">
-                <span className="manager-label">Manager</span>
-                <span className="manager-name">{awayTeam.manager || 'TBD'}</span>
-              </div>
-              <div className="roster-players">
-                {awayTeam.players?.map((player, idx) => (
-                  <div key={idx} className="roster-player">
-                    <span className="player-number">{idx + 1}</span>
-                    <span className="player-name">{player}</span>
-                  </div>
-                ))}
+              <div className="roster-divider"></div>
+              <div className="roster-column away-roster">
+                <div className="roster-header">
+                  <span className="manager-label">Manager</span>
+                  <span className="manager-name">{awayTeam.manager || 'TBD'}</span>
+                </div>
+                <div className="roster-players">
+                  {awayTeam.players?.map((player, idx) => (
+                    <div key={idx} className="roster-player">
+                      <span className="player-number">{idx + 1}</span>
+                      <span className="player-name">{player}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
