@@ -1,0 +1,580 @@
+[
+  {
+    "id": "match-1",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769865967,
+      "nanoseconds": 885000000
+    },
+    "goals": [
+      {
+        "team": "dhurandhars",
+        "player": "Shashank",
+        "minute": null,
+        "assist": "Sagar Singh"
+      },
+      {
+        "team": "dhurandhars",
+        "player": "Sagar Singh",
+        "assist": "Sukhpal",
+        "minute": null
+      }
+    ],
+    "momPublishedAt": "2026-02-01T13:44:35.619Z",
+    "away": "dhurandhars",
+    "home": "feel-united",
+    "matchNumber": 1,
+    "date": "2026-01-29",
+    "isFinal": false,
+    "manOfTheMatch": "Shashank",
+    "time": "17:00",
+    "scoreHome": 0,
+    "scoreAway": 2,
+    "momWinners": [
+      "raghu@scapia.cards",
+      "aniruddha@scapia.cards",
+      "navdeep@scapia.cards"
+    ],
+    "predictionsLocked": true,
+    "updatedAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769953566,
+      "nanoseconds": 920000000
+    },
+    "status": "ft"
+  },
+  {
+    "id": "match-2",
+    "scoreAway": 0,
+    "time": "17:30",
+    "manOfTheMatch": "Kushal",
+    "scoreHome": 4,
+    "away": "goaldiggers",
+    "momPublishedAt": "2026-02-01T13:46:19.268Z",
+    "date": "2026-01-29",
+    "home": "userflow",
+    "matchNumber": 2,
+    "isFinal": false,
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769865967,
+      "nanoseconds": 993000000
+    },
+    "predictionsLocked": true,
+    "momWinners": [
+      "praveen.kumar@scapia.cards"
+    ],
+    "status": "ft",
+    "goals": [
+      {
+        "assist": "Avaneesh Kulkarni",
+        "team": "userflow",
+        "player": "Kushal",
+        "minute": null
+      },
+      {
+        "team": "userflow",
+        "player": "Avaneesh Kulkarni",
+        "assist": "Kushal",
+        "minute": null
+      },
+      {
+        "team": "userflow",
+        "player": "Anurag Kumar Singh",
+        "minute": null,
+        "assist": null
+      },
+      {
+        "minute": null,
+        "player": "Sumedh Zope",
+        "assist": "Kushal",
+        "team": "userflow"
+      }
+    ],
+    "updatedAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769953579,
+      "nanoseconds": 391000000
+    }
+  },
+  {
+    "id": "match-3",
+    "away": "dhurandhars",
+    "matchNumber": 3,
+    "time": "18:00",
+    "date": "2026-01-29",
+    "updatedAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769953611,
+      "nanoseconds": 968000000
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769865968,
+      "nanoseconds": 64000000
+    },
+    "manOfTheMatch": "Sagar Singh",
+    "status": "ft",
+    "goals": [
+      {
+        "player": "Own Goal",
+        "minute": null,
+        "isOwnGoal": true,
+        "team": "userflow",
+        "assist": null
+      },
+      {
+        "player": "Shashank",
+        "minute": null,
+        "assist": "Raghu",
+        "team": "dhurandhars"
+      },
+      {
+        "team": "dhurandhars",
+        "assist": "Sukhpal",
+        "player": "Sagar Singh",
+        "minute": null
+      }
+    ],
+    "home": "userflow",
+    "scoreHome": 1,
+    "isFinal": false,
+    "momPublishedAt": "2026-02-01T13:46:46.617Z",
+    "predictionsLocked": true,
+    "momWinners": [
+      "shravani@scapia.cards",
+      "raghu@scapia.cards",
+      "akg@scapia.cards",
+      "aniruddha@scapia.cards",
+      "ria@scapia.cards",
+      "saumya@scapia.cards",
+      "salman@scapia.cards",
+      "kartikay@scapia.cards",
+      "mayank.vishnoi@scapia.cards",
+      "priyanshu.garg@scapia.cards",
+      "shreyash.soman@scapia.cards",
+      "abdul@scapia.cards"
+    ],
+    "scoreAway": 2
+  },
+  {
+    "id": "match-4",
+    "date": "2026-01-29",
+    "away": "dhurandhars",
+    "goals": [
+      {
+        "assist": "Pratham P",
+        "team": "goaldiggers",
+        "minute": null,
+        "player": "Parth Jhawar"
+      },
+      {
+        "assist": "Sukhpal",
+        "player": "Shashank",
+        "team": "dhurandhars",
+        "minute": null
+      }
+    ],
+    "manOfTheMatch": "Parth Jhawar",
+    "updatedAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769953626,
+      "nanoseconds": 884000000
+    },
+    "matchNumber": 4,
+    "home": "goaldiggers",
+    "scoreAway": 1,
+    "momPublishedAt": "2026-02-01T13:47:03.601Z",
+    "time": "19:00",
+    "isFinal": false,
+    "scoreHome": 1,
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769865968,
+      "nanoseconds": 158000000
+    },
+    "momWinners": [
+      "sumedh@scapia.cards",
+      "rajendra.ranka@scapia.cards",
+      "jubin.joseph@scapia.cards",
+      "parth@scapia.cards",
+      "suditi@scapia.cards",
+      "abdul@scapia.cards",
+      "navdeep@scapia.cards"
+    ],
+    "predictionsLocked": true,
+    "status": "ft"
+  },
+  {
+    "id": "match-5",
+    "updatedAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769953643,
+      "nanoseconds": 235000000
+    },
+    "manOfTheMatch": "Ninad",
+    "date": "2026-01-30",
+    "momPublishedAt": "2026-02-01T13:47:23.117Z",
+    "time": "18:00",
+    "away": "userflow",
+    "home": "feel-united",
+    "status": "ft",
+    "scoreAway": 2,
+    "momWinners": [
+      "shravani@scapia.cards",
+      "raghu@scapia.cards",
+      "jubin.joseph@scapia.cards",
+      "priyanshu.garg@scapia.cards",
+      "praveen.kumar@scapia.cards",
+      "suditi@scapia.cards"
+    ],
+    "predictionsLocked": true,
+    "goals": [
+      {
+        "assist": null,
+        "player": "Ninad",
+        "minute": null,
+        "team": "feel-united"
+      },
+      {
+        "assist": "Sagar Awasthi",
+        "minute": null,
+        "player": "Ninad",
+        "team": "feel-united"
+      },
+      {
+        "team": "userflow",
+        "player": "Avaneesh Kulkarni",
+        "assist": null,
+        "minute": null
+      },
+      {
+        "team": "userflow",
+        "player": "Sumedh Zope",
+        "minute": null,
+        "assist": "Kushal"
+      }
+    ],
+    "scoreHome": 2,
+    "isFinal": false,
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769865968,
+      "nanoseconds": 262000000
+    },
+    "matchNumber": 5
+  },
+  {
+    "id": "match-6",
+    "time": "18:30",
+    "scoreAway": 0,
+    "date": "2026-01-30",
+    "predictionsLocked": true,
+    "updatedAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769953656,
+      "nanoseconds": 283000000
+    },
+    "away": "feel-united",
+    "manOfTheMatch": "Parth Jhawar",
+    "scoreHome": 2,
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769865968,
+      "nanoseconds": 342000000
+    },
+    "momPublishedAt": "2026-02-01T13:47:36.167Z",
+    "momWinners": [
+      "salman@scapia.cards",
+      "parth@scapia.cards",
+      "navdeep@scapia.cards",
+      "sukhpal@scapia.cards",
+      "swastik@scapia.cards",
+      "tejas@scapia.cards"
+    ],
+    "home": "goaldiggers",
+    "status": "ft",
+    "matchNumber": 6,
+    "isFinal": false,
+    "goals": [
+      {
+        "assist": null,
+        "minute": null,
+        "player": "Parth Jhawar",
+        "team": "goaldiggers"
+      },
+      {
+        "minute": null,
+        "team": "goaldiggers",
+        "assist": null,
+        "player": "Pratham P"
+      }
+    ]
+  },
+  {
+    "id": "match-7",
+    "status": "ft",
+    "date": "2026-01-30",
+    "time": "19:00",
+    "matchNumber": 7,
+    "home": "dhurandhars",
+    "manOfTheMatch": "Avaneesh Kulkarni",
+    "scoreHome": 1,
+    "isFinal": false,
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769865968,
+      "nanoseconds": 417000000
+    },
+    "updatedAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769953692,
+      "nanoseconds": 608000000
+    },
+    "momPublishedAt": "2026-02-01T13:47:49.634Z",
+    "scoreAway": 6,
+    "away": "userflow",
+    "momWinners": [],
+    "goals": [
+      {
+        "assist": null,
+        "minute": null,
+        "team": "dhurandhars",
+        "player": "Sagar Singh"
+      },
+      {
+        "assist": "Sumedh Zope",
+        "team": "userflow",
+        "player": "Avaneesh Kulkarni",
+        "minute": null
+      },
+      {
+        "minute": null,
+        "assist": "Sumedh Zope",
+        "team": "userflow",
+        "player": "Avaneesh Kulkarni"
+      },
+      {
+        "team": "userflow",
+        "minute": null,
+        "player": "Avaneesh Kulkarni",
+        "assist": "Sumedh Zope"
+      },
+      {
+        "minute": null,
+        "assist": "Anurag Kumar Singh",
+        "team": "userflow",
+        "player": "Avaneesh Kulkarni"
+      },
+      {
+        "minute": null,
+        "player": "Avaneesh Kulkarni",
+        "team": "userflow",
+        "assist": "Kushal"
+      },
+      {
+        "team": "userflow",
+        "minute": null,
+        "assist": null,
+        "player": "Anurag Kumar Singh"
+      }
+    ],
+    "predictionsLocked": true
+  },
+  {
+    "id": "match-8",
+    "goals": [
+      {
+        "assist": "Abdul",
+        "player": "Pratham P",
+        "team": "goaldiggers",
+        "minute": null
+      },
+      {
+        "team": "goaldiggers",
+        "minute": null,
+        "assist": "Parth Jhawar",
+        "player": "Pratham P"
+      },
+      {
+        "player": "Parth Jhawar",
+        "team": "goaldiggers",
+        "minute": null,
+        "assist": null
+      },
+      {
+        "player": "Sumedh Zope",
+        "minute": null,
+        "assist": "Kushal",
+        "team": "userflow"
+      },
+      {
+        "minute": null,
+        "assist": "Sumedh Zope",
+        "player": "Anurag Kumar Singh",
+        "team": "userflow"
+      },
+      {
+        "player": "Kushal",
+        "team": "userflow",
+        "assist": "Anurag Kumar Singh",
+        "minute": null
+      },
+      {
+        "player": "Anurag Kumar Singh",
+        "team": "userflow",
+        "minute": null,
+        "assist": "Sumedh Zope"
+      }
+    ],
+    "date": "2026-01-30",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769865968,
+      "nanoseconds": 493000000
+    },
+    "predictionsLocked": true,
+    "momPublishedAt": "2026-02-01T13:44:07.604Z",
+    "updatedAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769953686,
+      "nanoseconds": 742000000
+    },
+    "manOfTheMatch": "Sumedh Zope",
+    "time": "19:30",
+    "matchNumber": 8,
+    "home": "goaldiggers",
+    "away": "userflow",
+    "scoreHome": 3,
+    "momWinners": [
+      "sumedh@scapia.cards",
+      "jalaj@scapia.cards"
+    ],
+    "scoreAway": 4,
+    "status": "ft",
+    "isFinal": false
+  },
+  {
+    "id": "match-9",
+    "momPublishedAt": "2026-02-01T13:48:23.483Z",
+    "scoreHome": 0,
+    "away": "feel-united",
+    "home": "dhurandhars",
+    "goals": [
+      {
+        "player": "Ninad",
+        "team": "feel-united",
+        "minute": null,
+        "assist": null
+      },
+      {
+        "assist": "Ninad",
+        "team": "feel-united",
+        "minute": null,
+        "player": "Umair"
+      },
+      {
+        "minute": null,
+        "player": "Umair",
+        "team": "feel-united",
+        "assist": "Ninad"
+      },
+      {
+        "assist": null,
+        "player": "Umair",
+        "team": "feel-united",
+        "minute": null
+      }
+    ],
+    "scoreAway": 4,
+    "time": "20:00",
+    "momWinners": [],
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769865968,
+      "nanoseconds": 572000000
+    },
+    "status": "ft",
+    "matchNumber": 9,
+    "updatedAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769953703,
+      "nanoseconds": 599000000
+    },
+    "isFinal": false,
+    "date": "2026-01-30",
+    "manOfTheMatch": "Umair"
+  },
+  {
+    "id": "match-10",
+    "goals": [],
+    "away": "goaldiggers",
+    "status": "upcoming",
+    "scoreAway": 0,
+    "date": "2026-02-02",
+    "time": "18:00",
+    "scoreHome": 0,
+    "matchNumber": 10,
+    "isFinal": false,
+    "home": "feel-united",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769865968,
+      "nanoseconds": 665000000
+    }
+  },
+  {
+    "id": "match-11",
+    "scoreAway": 0,
+    "status": "upcoming",
+    "goals": [],
+    "isFinal": false,
+    "scoreHome": 0,
+    "time": "18:30",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769865968,
+      "nanoseconds": 747000000
+    },
+    "away": "goaldiggers",
+    "home": "dhurandhars",
+    "date": "2026-02-02",
+    "matchNumber": 11
+  },
+  {
+    "id": "match-12",
+    "scoreHome": 0,
+    "time": "19:00",
+    "status": "upcoming",
+    "goals": [],
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769865968,
+      "nanoseconds": 823000000
+    },
+    "isFinal": false,
+    "away": "feel-united",
+    "scoreAway": 0,
+    "date": "2026-02-02",
+    "home": "userflow",
+    "matchNumber": 12
+  },
+  {
+    "id": "match-13",
+    "home": "tbd",
+    "date": "2026-02-02",
+    "scoreAway": 0,
+    "goals": [],
+    "matchNumber": 13,
+    "away": "tbd",
+    "status": "upcoming",
+    "time": "19:30",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1769865968,
+      "nanoseconds": 903000000
+    },
+    "scoreHome": 0,
+    "isFinal": true
+  }
+]
