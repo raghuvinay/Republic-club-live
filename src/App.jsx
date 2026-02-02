@@ -5,6 +5,7 @@ import MatchesTab from './components/MatchesTab';
 import TableTab from './components/TableTab';
 import PollsTab from './components/PollsTab';
 import RulesTab from './components/RulesTab';
+import TrophyTab from './components/TrophyTab';
 import './App.css';
 
 const AppContent = () => {
@@ -24,6 +25,7 @@ const AppContent = () => {
       <Header />
 
       <main className="main-content">
+        {activeTab === 'trophy' && <TrophyTab />}
         {activeTab === 'matches' && <MatchesTab />}
         {activeTab === 'table' && <TableTab />}
         {activeTab === 'polls' && <PollsTab />}

@@ -42,6 +42,11 @@ export const AppProvider = ({ children }) => {
       // Subscribe to real-time updates
       unsubMatches = subscribeToMatches((data) => {
         setMatches(data);
+        // Set default tab to trophy if tournament is complete
+        const isTournamentComplete = data.some(m => m.isFinal && m.status === 'ft');
+        if (isTournamentComplete) {
+          setActiveTab('trophy');
+        }
         setLoading(false);
       });
 

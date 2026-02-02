@@ -6,7 +6,23 @@ const BottomNav = () => {
 
   const liveCount = matches.filter(m => m.status === 'live').length;
 
+  // Check if tournament is complete (final match finished)
+  const isTournamentComplete = matches.some(m => m.isFinal && m.status === 'ft');
+
   const tabs = [
+    ...(isTournamentComplete ? [{
+      id: 'trophy',
+      label: 'Trophy',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+          <path d="M4 22h16"/>
+          <path d="M10 22V8a2 2 0 0 0-2-2H6v4a6 6 0 0 0 12 0V6h-2a2 2 0 0 0-2 2v14"/>
+        </svg>
+      ),
+      tag: 'NEW'
+    }] : []),
     {
       id: 'matches',
       label: 'Matches',
