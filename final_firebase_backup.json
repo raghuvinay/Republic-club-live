@@ -507,16 +507,31 @@
   },
   {
     "id": "match-10",
-    "goals": [],
+    "goals": [
+      {
+        "player": "Umair",
+        "team": "feel-united",
+        "assist": "Sandipan",
+        "minute": null
+      },
+      {
+        "player": "Pratham P",
+        "team": "goaldiggers",
+        "assist": null,
+        "minute": null
+      }
+    ],
     "away": "goaldiggers",
-    "status": "upcoming",
-    "scoreAway": 0,
+    "status": "ft",
+    "scoreAway": 1,
     "date": "2026-02-02",
     "time": "18:00",
-    "scoreHome": 0,
+    "scoreHome": 1,
     "matchNumber": 10,
     "isFinal": false,
     "home": "feel-united",
+    "manOfTheMatch": "Pratham P",
+    "predictionsLocked": true,
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1769865968,
@@ -526,10 +541,29 @@
   {
     "id": "match-11",
     "scoreAway": 0,
-    "status": "upcoming",
-    "goals": [],
+    "status": "ft",
+    "goals": [
+      {
+        "player": "Sagar Singh",
+        "team": "dhurandhars",
+        "assist": null,
+        "minute": null
+      },
+      {
+        "player": "Shashank",
+        "team": "dhurandhars",
+        "assist": "Sagar Singh",
+        "minute": null
+      },
+      {
+        "player": "Sukhpal",
+        "team": "dhurandhars",
+        "assist": "Shashank",
+        "minute": null
+      }
+    ],
     "isFinal": false,
-    "scoreHome": 0,
+    "scoreHome": 3,
     "time": "18:30",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
@@ -539,14 +573,41 @@
     "away": "goaldiggers",
     "home": "dhurandhars",
     "date": "2026-02-02",
-    "matchNumber": 11
+    "matchNumber": 11,
+    "manOfTheMatch": "Sagar Singh",
+    "predictionsLocked": true
   },
   {
     "id": "match-12",
     "scoreHome": 0,
     "time": "19:00",
-    "status": "upcoming",
-    "goals": [],
+    "status": "ft",
+    "goals": [
+      {
+        "player": "Umair",
+        "team": "feel-united",
+        "assist": "Ninad",
+        "minute": null
+      },
+      {
+        "player": "Umair",
+        "team": "feel-united",
+        "assist": null,
+        "minute": null
+      },
+      {
+        "player": "Ninad",
+        "team": "feel-united",
+        "assist": null,
+        "minute": null
+      },
+      {
+        "player": "Sagar Awasthi",
+        "team": "feel-united",
+        "assist": "Ninad",
+        "minute": null
+      }
+    ],
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1769865968,
@@ -554,27 +615,50 @@
     },
     "isFinal": false,
     "away": "feel-united",
-    "scoreAway": 0,
+    "scoreAway": 4,
     "date": "2026-02-02",
     "home": "userflow",
-    "matchNumber": 12
+    "matchNumber": 12,
+    "manOfTheMatch": "Umair",
+    "predictionsLocked": true
   },
   {
     "id": "match-13",
-    "home": "tbd",
+    "home": "dhurandhars",
     "date": "2026-02-02",
-    "scoreAway": 0,
-    "goals": [],
+    "scoreAway": 1,
+    "goals": [
+      {
+        "player": "Sumedh Zope",
+        "team": "userflow",
+        "assist": "Avaneesh Kulkarni",
+        "minute": null
+      },
+      {
+        "player": "Sagar Singh",
+        "team": "dhurandhars",
+        "assist": "Sukhpal",
+        "minute": null
+      }
+    ],
     "matchNumber": 13,
-    "away": "tbd",
-    "status": "upcoming",
+    "away": "userflow",
+    "status": "ft",
     "time": "19:30",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1769865968,
       "nanoseconds": 903000000
     },
-    "scoreHome": 0,
-    "isFinal": true
+    "scoreHome": 1,
+    "isFinal": true,
+    "penaltyWinner": "dhurandhars",
+    "penalties": {
+      "dhurandhars": ["Sagar Singh", "Raghu", "Sukhpal", "Siddharth", "Mayank"],
+      "userflow": ["Sumedh Zope", "Avaneesh Kulkarni"],
+      "missed": ["Sandy", "Jalaj"]
+    },
+    "predictionsLocked": true,
+    "manOfTheMatch": "Sagar Singh"
   }
 ]
