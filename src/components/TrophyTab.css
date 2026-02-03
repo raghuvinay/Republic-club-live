@@ -726,6 +726,286 @@
   margin-left: 0.25rem;
 }
 
+/* Shareable Card */
+.share-card-wrapper {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.share-card {
+  width: 320px;
+  padding: 1.5rem;
+  background: linear-gradient(180deg, #2d1b4e 0%, #1a0a2e 50%, #0d0518 100%);
+  border-radius: 20px;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.share-card-header {
+  margin-bottom: 0.75rem;
+}
+
+.share-card-badge {
+  display: inline-block;
+  padding: 0.375rem 1rem;
+  background: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%);
+  color: #1a0a2e;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  border-radius: 20px;
+}
+
+.share-card-trophy {
+  font-size: 3.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.share-card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+  color: #FFD700;
+  margin-bottom: 0.75rem;
+}
+
+.share-card-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.share-card-logo {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #FFD700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+.share-card-team-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: white;
+  letter-spacing: 0.05em;
+}
+
+.share-card-final {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1rem;
+}
+
+.share-card-pens {
+  color: #FFD700;
+  font-weight: 600;
+}
+
+.share-card-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+  margin-bottom: 1rem;
+}
+
+.share-card-awards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-bottom: 1rem;
+}
+
+.share-card-award {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+}
+
+.award-emoji {
+  font-size: 1.25rem;
+}
+
+.share-card-award > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.award-label {
+  font-size: 0.5rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.award-value {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: white;
+}
+
+.share-card-stats {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.share-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.5rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.share-stat span {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: #FF005A;
+}
+
+.share-card-footer {
+  padding-top: 0.5rem;
+}
+
+.share-card-hashtag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Share Section */
+.share-section {
+  margin-bottom: 1.5rem;
+}
+
+.share-buttons {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.share-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.share-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.share-btn:not(:disabled):hover {
+  transform: translateY(-2px);
+}
+
+.share-btn:active {
+  transform: translateY(0);
+}
+
+.share-btn.primary {
+  background: linear-gradient(135deg, #FF005A 0%, #FFD700 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 0, 90, 0.3);
+}
+
+.share-btn.primary:not(:disabled):hover {
+  box-shadow: 0 6px 20px rgba(255, 0, 90, 0.4);
+}
+
+.share-btn.secondary {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.share-btn.secondary:not(:disabled):hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+.share-buttons-secondary {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.share-btn-small {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.2s;
+}
+
+.share-btn-small:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+.share-btn-small.whatsapp {
+  background: rgba(37, 211, 102, 0.2);
+  color: #25D366;
+}
+
+.share-btn-small.whatsapp:hover {
+  background: rgba(37, 211, 102, 0.3);
+}
+
+.share-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.share-icon-small {
+  width: 14px;
+  height: 14px;
+}
+
+.btn-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Thank You Section */
 .thankyou-section {
   margin-bottom: 1rem;

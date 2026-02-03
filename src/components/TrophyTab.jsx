@@ -1,10 +1,116 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useRef } from 'react';
+import html2canvas from 'html2canvas';
 import { useApp } from '../contexts/AppContext';
 import { TEAMS } from '../data/teams';
 import './TrophyTab.css';
 
 const TrophyTab = () => {
   const { matches, predictions, calculateTopScorers } = useApp();
+  const [copied, setCopied] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const shareCardRef = useRef(null);
+
+  // Share text for WhatsApp
+  const shareText = `🏆 *SCAPIA OFFSIDE 2026*
+
+🥇 *CHAMPIONS: DHURANDHARS*
+Won on penalties vs Userflow (1-1, 5-3 pens)
+
+🏅 *AWARDS*
+👟 Golden Boot: Avaneesh Kulkarni (8 goals)
+🧤 Golden Glove: Sandipan
+⭐ Man of Series: Ninad & Sumedh Zope
+
+📊 *TOURNAMENT STATS*
+⚽ 51 Goals in 13 Matches
+🎯 3.9 Goals per Match
+🎩 2 Hat-tricks
+
+🔗 Full stats: https://raghuvinay.github.io/Republic-club-live/
+
+#ScapiaOffside2026`;
+
+  const handleShare = () => {
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
+  const handleDownloadImage = async () => {
+    if (!shareCardRef.current || generating) return;
+
+    setGenerating(true);
+    try {
+      const canvas = await html2canvas(shareCardRef.current, {
+        scale: 2,
+        backgroundColor: '#1a0a2e',
+        useCORS: true,
+        allowTaint: true,
+        logging: false
+      });
+
+      const link = document.createElement('a');
+      link.download = 'scapia-offside-2026-champions.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (err) {
+      console.error('Failed to generate image:', err);
+    }
+    setGenerating(false);
+  };
+
+  const handleShareImage = async () => {
+    if (!shareCardRef.current || generating) return;
+
+    setGenerating(true);
+    try {
+      const canvas = await html2canvas(shareCardRef.current, {
+        scale: 2,
+        backgroundColor: '#1a0a2e',
+        useCORS: true,
+        allowTaint: true,
+        logging: false
+      });
+
+      canvas.toBlob(async (blob) => {
+        if (blob && navigator.share) {
+          const file = new File([blob], 'scapia-offside-2026.png', { type: 'image/png' });
+          try {
+            await navigator.share({
+              files: [file],
+              title: 'Scapia Offside 2026 Champions',
+              text: 'Dhurandhars are the champions! 🏆'
+            });
+          } catch (shareErr) {
+            // If share fails, download instead
+            const link = document.createElement('a');
+            link.download = 'scapia-offside-2026-champions.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+          }
+        } else {
+          // Fallback to download
+          const link = document.createElement('a');
+          link.download = 'scapia-offside-2026-champions.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        }
+        setGenerating(false);
+      }, 'image/png');
+    } catch (err) {
+      console.error('Failed to generate image:', err);
+      setGenerating(false);
+    }
+  };
 
   const topScorers = useMemo(() => calculateTopScorers(), [calculateTopScorers]);
 
@@ -90,23 +196,29 @@ const TrophyTab = () => {
       .slice(0, 10);
   }, [predictions]);
 
-  // Poll Leaderboard - users who won coins
-  const pollLeaderboard = useMemo(() => {
-    const userCoins = {};
-    const ftMatches = matches.filter(m => m.status === 'ft' && m.momWinners && m.momWinners.length > 0);
+  // Poll Leaderboard - users who won coins (matches PollsTab calculation)
+  const PRIZE_POOL = 1000;
+  const extractName = (email) => {
+    if (!email) return '';
+    return email.replace('@scapia.cards', '');
+  };
 
-    ftMatches.forEach(match => {
-      (match.momWinners || []).forEach(email => {
-        const name = email.split('@')[0].replace('.', ' ').replace(/\b\w/g, c => c.toUpperCase());
-        if (!userCoins[email]) {
-          userCoins[email] = { email, name, coins: 0, wins: 0 };
+  const pollLeaderboard = useMemo(() => {
+    const earnings = {};
+
+    matches.filter(m => m.momPublishedAt && m.momWinners?.length > 0).forEach(match => {
+      const coinsPerWinner = Math.floor(PRIZE_POOL / match.momWinners.length);
+      match.momWinners.forEach(winner => {
+        const cleanName = extractName(winner);
+        if (!earnings[cleanName]) {
+          earnings[cleanName] = { name: cleanName, coins: 0, wins: 0 };
         }
-        userCoins[email].coins += 100;
-        userCoins[email].wins += 1;
+        earnings[cleanName].coins += coinsPerWinner;
+        earnings[cleanName].wins++;
       });
     });
 
-    return Object.values(userCoins)
+    return Object.values(earnings)
       .sort((a, b) => b.coins - a.coins)
       .slice(0, 10);
   }, [matches]);
@@ -427,28 +539,126 @@ const TrophyTab = () => {
         <section className="poll-leaders-section animate-slide-up" style={{ animationDelay: '0.7s' }}>
           <div className="section-header">
             <h2 className="section-title">POLL LEADERBOARD</h2>
-            <span className="section-badge coins-badge">💰 TOP WINNERS</span>
+            <span className="section-badge coins-badge">💰 TOP 10</span>
           </div>
 
           <div className="poll-leaders-list">
-            {pollLeaderboard.map((user, idx) => (
-              <div key={user.email} className={`poll-leader-row ${idx === 0 ? 'top-winner' : ''}`}>
+            {pollLeaderboard.map((player, idx) => (
+              <div key={player.name} className={`poll-leader-row ${idx === 0 ? 'top-winner' : ''}`}>
                 <span className="poll-leader-rank">
-                  {idx === 0 ? '👑' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : idx + 1}
+                  {idx === 0 ? '💰' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : idx + 1}
                 </span>
                 <div className="poll-leader-info">
-                  <span className="poll-leader-name">{user.name}</span>
-                  <span className="poll-leader-wins">{user.wins} correct prediction{user.wins !== 1 ? 's' : ''}</span>
+                  <span className="poll-leader-name">{player.name}</span>
+                  <span className="poll-leader-wins">{player.wins} win{player.wins !== 1 ? 's' : ''}</span>
                 </div>
-                <span className="poll-leader-coins">{user.coins}</span>
+                <span className="poll-leader-coins">{player.coins}</span>
               </div>
             ))}
           </div>
         </section>
       )}
 
+      {/* Shareable Card (for image generation) */}
+      <div className="share-card-wrapper">
+        <div ref={shareCardRef} className="share-card">
+          <div className="share-card-header">
+            <span className="share-card-badge">SCAPIA OFFSIDE 2026</span>
+          </div>
+          <div className="share-card-trophy">🏆</div>
+          <h2 className="share-card-title">CHAMPIONS</h2>
+          <div className="share-card-team">
+            <img src={champion?.logo} alt="" className="share-card-logo" crossOrigin="anonymous" />
+            <span className="share-card-team-name">{champion?.name}</span>
+          </div>
+          <div className="share-card-final">
+            <span>Final: DHU 1-1 UFU</span>
+            <span className="share-card-pens">(5-3 on penalties)</span>
+          </div>
+          <div className="share-card-divider"></div>
+          <div className="share-card-awards">
+            <div className="share-card-award">
+              <span className="award-emoji">👟</span>
+              <div>
+                <span className="award-label">Golden Boot</span>
+                <span className="award-value">Avaneesh Kulkarni</span>
+              </div>
+            </div>
+            <div className="share-card-award">
+              <span className="award-emoji">🧤</span>
+              <div>
+                <span className="award-label">Golden Glove</span>
+                <span className="award-value">Sandipan</span>
+              </div>
+            </div>
+            <div className="share-card-award">
+              <span className="award-emoji">⭐</span>
+              <div>
+                <span className="award-label">Man of Series</span>
+                <span className="award-value">Ninad & Sumedh</span>
+              </div>
+            </div>
+          </div>
+          <div className="share-card-stats">
+            <div className="share-stat"><span>51</span>Goals</div>
+            <div className="share-stat"><span>13</span>Matches</div>
+            <div className="share-stat"><span>2</span>Hat-tricks</div>
+          </div>
+          <div className="share-card-footer">
+            <span className="share-card-hashtag">#ScapiaOffside2026</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Share Section */}
+      <section className="share-section animate-slide-up" style={{ animationDelay: '0.75s' }}>
+        <div className="section-header">
+          <h2 className="section-title">SHARE THE GLORY</h2>
+        </div>
+
+        <div className="share-buttons">
+          <button className="share-btn primary" onClick={handleShareImage} disabled={generating}>
+            {generating ? (
+              <>
+                <div className="btn-spinner"></div>
+                Generating...
+              </>
+            ) : (
+              <>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="share-icon">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                  <polyline points="16 6 12 2 8 6"/>
+                  <line x1="12" y1="2" x2="12" y2="15"/>
+                </svg>
+                Share Image
+              </>
+            )}
+          </button>
+          <button className="share-btn secondary" onClick={handleDownloadImage} disabled={generating}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="share-icon">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download
+          </button>
+        </div>
+
+        <div className="share-buttons-secondary">
+          <button className="share-btn-small whatsapp" onClick={handleShare}>
+            <svg viewBox="0 0 24 24" fill="currentColor" className="share-icon-small">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            WhatsApp Text
+          </button>
+          <button className="share-btn-small" onClick={handleCopy}>
+            {copied ? 'Copied!' : 'Copy Text'}
+          </button>
+        </div>
+      </section>
+
       {/* Thank You Message */}
-      <section className="thankyou-section animate-slide-up" style={{ animationDelay: '0.65s' }}>
+      <section className="thankyou-section animate-slide-up" style={{ animationDelay: '0.8s' }}>
         <div className="thankyou-card">
           <div className="thankyou-emoji">🙏</div>
           <h3 className="thankyou-title">Thank You!</h3>
